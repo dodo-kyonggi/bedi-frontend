@@ -1,5 +1,6 @@
 rootProject.name = 'bedi2'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+include ':react-native-google-signin', ':app'
 include ':app'
 includeBuild('../node_modules/react-native-gradle-plugin')
 

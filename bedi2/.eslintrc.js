@@ -8,5 +8,5 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
-  },
+  };
 };
