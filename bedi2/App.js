@@ -12,10 +12,9 @@ import {
   View,
 } from 'react-native';
 
-import GoogleLogin from './GoogleLogin/GoogleLogin';
+import GoogleLogin from './Login/GoogleLogin';
 
 const App = () => {
-  console.log('sss')
   return (
     <View>
       <GoogleLogin />
