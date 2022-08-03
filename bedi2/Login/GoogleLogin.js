@@ -1,19 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import {
-    GoogleSignin,
-    GoogleSigninButton,
-    statusCodes
-} from '@react-native-google-signin/google-signin';
+
+
 const GoogleLogin = () => {
     const [user, setUser] = useState({})
     useEffect(() => {
-        GoogleSignin.configure({
-            scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-            webClientId: '237414230015-noljjs9m1okg0cdih5t1tpa336stp0r3.apps.googleusercontent.com,
-            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-        });
+
         isSignedIn()
     }, [])
     const signIn = async () => {
