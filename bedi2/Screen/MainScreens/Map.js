@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 
 import Geolocation from "react-native-geolocation-service";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { Platform, PermissionsAndroid, View, Text, Image } from "react-native";
+import { Platform, PermissionsAndroid, View, Text, Image, TouchableOpacity } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import search from '../../Icons/search.png'
+
 
 function Map() {
     const [initialRegion, setInitialRegion] = useState({
@@ -15,7 +16,8 @@ function Map() {
     })
     const [latitude, setLatitude] = useState(null)
     const [longitude, setLongitude] = useState(null)
-
+    const [text, setText] = useState('')
+    const [textInput, setTextInput] = useState('')
     useEffect(() => {
         console.log('LocationScreen')
         const watchId = Geolocation.getCurrentPosition(
@@ -29,17 +31,31 @@ function Map() {
         )
     }, [])
 
+    const onChangeSearch = (e) => {
+        setText(e.nativeEvent.text)
+    }
+
+    const searchFn = () => {
+        setTextInput(text)
+        setText('')
+    }
     return (
         <View>
             <View
-                style={{ flexDirection: 'row', }}
+                style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: '5%' }}
             >
-                <Image
-                    source={search}
-                    style={{ width: 24, height: 24 }}
-                />
+                <TouchableOpacity
+                    onPress={() => searchFn()}>
+                    <Image
+                        source={search}
+                        style={{ width: 24, height: 24, marginRight: '3%' }}
+                    />
+                </TouchableOpacity>
                 <TextInput
                     placeholder="설정하고자 하는 장소를 검색해주세요. (예: 경기대학교)"
+                    onChange={(e) => onChangeSearch(e)}
+                    value={text}
+
                 />
             </View>
             <MapView
