@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from './Screen/MainScreens/Home'
@@ -23,11 +23,34 @@ const MainStackComponent = () => {
     </MainStack.Navigator>
   );
 }
+
+const TabBarIcon = (focused, name) => {
+  let iconImagePath;
+  if (name === 'Main') {
+    iconImagePath = require('./Icons/home.png')
+  } else if (name === 'Ranking') {
+    iconImagePath = require('./Icons/ranking.png')
+  } else if (name === 'Mypage') {
+    iconImagePath = require('./Icons/mypage.png')
+  }
+  return (
+    <Image
+      source={iconImagePath}
+      style={{ width: 30, height: 30 }}
+    />
+  )
+}
+
 const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="Main"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused }) => (
+            TabBarIcon(focused, route.name)
+          )
+        })}
       >
         <Tab.Screen
           name="Main"
