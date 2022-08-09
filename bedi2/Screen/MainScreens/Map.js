@@ -5,7 +5,7 @@ import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { Platform, PermissionsAndroid, View, Text, Image, TouchableOpacity } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import search from '../../Icons/search.png'
-
+import RNGooglePlaces from 'react-native-google-places';
 
 function Map() {
     const [initialRegion, setInitialRegion] = useState({
@@ -18,6 +18,7 @@ function Map() {
     const [longitude, setLongitude] = useState(null)
     const [text, setText] = useState('')
     const [textInput, setTextInput] = useState('')
+
     useEffect(() => {
         console.log('LocationScreen')
         const watchId = Geolocation.getCurrentPosition(
@@ -38,26 +39,24 @@ function Map() {
     const searchFn = () => {
         setTextInput(text)
         setText('')
+        RNGooglePlaces
+            .openAutocompleteModal()
+            .then((place) => {
+                console.log(place);
+                // place represents user's selection from the
+                // suggestions and it is a simplified Google Place object.
+                console.log('찾는 ', place.name, ' 장소의 경도와 위도 : ', place.location.latitude, place.location.longitude)
+                return
+            })
+            .catch(error => console.log(error.message));
     }
+
     return (
         <View>
-            <View
-                style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: '5%' }}
-            >
-                <TouchableOpacity
-                    onPress={() => searchFn()}>
-                    <Image
-                        source={search}
-                        style={{ width: 24, height: 24, marginRight: '3%' }}
-                    />
-                </TouchableOpacity>
-                <TextInput
-                    placeholder="설정하고자 하는 장소를 검색해주세요. (예: 경기대학교)"
-                    onChange={(e) => onChangeSearch(e)}
-                    value={text}
+            <TouchableOpacity onPress={() => searchFn()}>
+                <Text>search button</Text>
+            </TouchableOpacity>
 
-                />
-            </View>
             <MapView
                 provider={PROVIDER_GOOGLE}
                 initialRegion={
@@ -67,7 +66,7 @@ function Map() {
                 showsMyLocationButton={true}
                 style={{ width: '100%', height: '100%' }}
             />
-        </View>
+        </View >
     );
 }
 
