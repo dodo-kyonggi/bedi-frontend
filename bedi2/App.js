@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Image } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -10,7 +10,8 @@ import Map from "./Screen/MainScreens/Map";
 import Ranking from "./Screen/Ranking";
 import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
-import SplashScreen from 'react-native-splash-screen';
+import Splashscreen from 'react-native-splash-screen'
+
 
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
@@ -43,6 +44,16 @@ const TabBarIcon = (focused, name) => {
 }
 
 const App = () => {
+
+  useEffect(() => {
+    try {
+      setTimeout(() => {
+        Splashscreen.hide();
+      }, 2000);
+    } catch (e) {
+      console.log('에러발생')
+    }
+  })
   return (
     <NavigationContainer>
       <Tab.Navigator
