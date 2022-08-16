@@ -260,9 +260,10 @@ dependencies {
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
-
+    implementation 'com.android.volley:volley:1.2.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation "com.google.android.gms:play-services-auth:20.2.0"
+    implementation project(':react-native-google-places')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }
@@ -277,7 +278,7 @@ dependencies {
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.flipper'
     }
-
+  
   implementation(project(':react-native-maps')){
       exclude group: 'com.google.android.gms', module:'play-services-base'
       exclude group: 'com.google.android.gms', module:'play-services-maps'
