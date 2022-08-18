@@ -10,8 +10,7 @@ import Map from "./Screen/MainScreens/Map";
 import Ranking from "./Screen/Ranking";
 import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
-import Splashscreen from 'react-native-splash-screen'
-
+import CalendarMap from './Screen/MainScreens/CalendarMap'
 
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
@@ -22,6 +21,7 @@ const MainStackComponent = () => {
       <MainStack.Screen name="Home" component={Home} />
       <MainStack.Screen name="Goals" component={Goals} />
       <MainStack.Screen name="Map" component={Map} />
+      <MainStack.Screen name="CalendarMap" component={CalendarMap} />
     </MainStack.Navigator>
   );
 }
@@ -45,15 +45,6 @@ const TabBarIcon = (focused, name) => {
 
 const App = () => {
 
-  useEffect(() => {
-    try {
-      setTimeout(() => {
-        Splashscreen.hide();
-      }, 2000);
-    } catch (e) {
-      console.log('에러발생')
-    }
-  })
   return (
     <NavigationContainer>
       <Tab.Navigator
