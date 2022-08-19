@@ -88,25 +88,36 @@ const Goals = ({ navigation }) => {
         }
         return final
     }
-    console.log('trued인지 false인지..', '날짜창: ', isModal, '목표창: ', gotogoal);
     return (
         <View
             style={{
                 flex: 1,
                 position: 'relative',
-                backgroundColor: 'white'
+                backgroundColor: 'white',
+                padding: '5%'
             }}>
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-around',
                 paddingVertical: '5%',
-                backgroundColor: 'white'
+                backgroundColor: '#F8F8F8',
+                flex: 1,
+                borderRadius: 6,
+                borderColor: 'black'
             }}>
                 {week.map((weekDay) => {
 
                     return (
-                        <View key={weekDay.formatted}>
-                            <Text>{weekDay.formatted}</Text>
+                        <View
+                            key={weekDay.formatted}
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <View style={{ paddingVertical: 5 }}>
+                                <Text>{weekDay.formatted}</Text>
+                            </View>
                             <TouchableOpacity
                                 onPress={() => onClickDate(weekDay.date)}
                                 style={(weekDay.date.getFullYear() === time.year && weekDay.date.getMonth() + 1 === time.month && weekDay.date.getDate() === time.day) ?
@@ -131,19 +142,34 @@ const Goals = ({ navigation }) => {
                     )
                 })}
             </View>
-            <Button
-                title='월별 날짜 보러가기'
-                onPress={() => setIsModal(prev => !prev)}
-            />
-            <Text>
-                홍길동님, 오늘 달성하고 싶은 것은 무엇인가요? &#13;&#10;추가버튼을 눌러 하나씩 추가해주세요!
-            </Text>
-
-
-            <Button
-                title='목표 설정하러 가기'
-                onPress={() => setGotogoal(prev => !prev)}
-            />
+            <View
+                style={{ alignItems: 'center', flex: 9 }}
+            >
+                <View style={{ paddingVertical: 10 }}>
+                    <Text>
+                        홍길동님, 오늘 달성하고 싶은 것은 무엇인가요? {"\n"}
+                        추가버튼을 눌러 하나씩 추가해주세요!
+                    </Text>
+                </View>
+                <View
+                    style={{ width: '80%', paddingVertical: 10 }}
+                >
+                    <Button
+                        title='월별 날짜 보러가기'
+                        onPress={() => setIsModal(prev => !prev)}
+                        color='#FBA928'
+                    />
+                </View>
+                <View
+                    style={{ width: '80%', paddingVertical: 10 }}
+                >
+                    <Button
+                        title='목표 설정하러 가기'
+                        onPress={() => setGotogoal(prev => !prev)}
+                        color='#fbc328'
+                    />
+                </View>
+            </View>
             {
                 isModal ? (
                     <View style={
@@ -191,63 +217,65 @@ const Goals = ({ navigation }) => {
                 ) : null
             }
 
-            {gotogoal ?
-                <View
-                    style={styles.modalContainer}
-                >
+            {
+                gotogoal ?
                     <View
-                        style={styles.closeContainer}
-
+                        style={styles.modalContainer}
                     >
-                        <TouchableOpacity
-                            onPress={() => setGotogoal(prev => !prev)}
+                        <View
+                            style={styles.closeContainer}
+
                         >
-                            <Image
-                                source={closeIcon}
-                                style={styles.closeStyle}
+                            <TouchableOpacity
+                                onPress={() => setGotogoal(prev => !prev)}
+                            >
+                                <Image
+                                    source={closeIcon}
+                                    style={styles.closeStyle}
 
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <Text
-                        style={{
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                            color: 'black'
-                        }}
-                    >
-                        목표 작성
-                    </Text>
-                    <TextInput
-                        style={{
-                            backgroundColor: 'white',
-                            borderRadius: 30,
-                            borderColor: 'black',
-                            borderWidth: 1,
-                            width: '80%',
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            fontSize: 16
-                        }}
-                        placeholder='추가하고 싶은 목록을 작성해주세요...'
-                    />
-                    <Text
-                        style={{
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                            color: 'black'
-                        }}
-                    >
-                        위치 설정
-                    </Text>
-                    <Button
-                        title="위치 설정하러 가기"
-                        onPress={() => navigation.navigate('Map')}
-                        style={{ flex: 1 }}
-                    />
-                </View> :
-                null}
-        </View>
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                fontWeight: 'bold',
+                                color: 'black'
+                            }}
+                        >
+                            목표 작성
+                        </Text>
+                        <TextInput
+                            style={{
+                                backgroundColor: 'white',
+                                borderRadius: 30,
+                                borderColor: 'black',
+                                borderWidth: 1,
+                                width: '80%',
+                                paddingVertical: 10,
+                                paddingHorizontal: 20,
+                                fontSize: 16
+                            }}
+                            placeholder='추가하고 싶은 목록을 작성해주세요...'
+                        />
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                fontWeight: 'bold',
+                                color: 'black'
+                            }}
+                        >
+                            위치 설정
+                        </Text>
+                        <Button
+                            title="위치 설정하러 가기"
+                            onPress={() => navigation.navigate('Map')}
+                            style={{ flex: 1 }}
+                        />
+                    </View> :
+                    null
+            }
+        </View >
     )
 }
 export default Goals
@@ -258,7 +286,6 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%',
         backgroundColor: 'white',
-        paddingHorizontal: 30,
         paddingTop: 28
     },
     closeContainer: {

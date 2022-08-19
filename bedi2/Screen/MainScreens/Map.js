@@ -32,7 +32,6 @@ function Map() {
     ])
     async function requestPermission() {
         try {
-            // 안드로이드 위치 정보 수집 권한 요청
             if (Platform.OS === "android") {
                 return await PermissionsAndroid.request(
                     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -73,8 +72,6 @@ function Map() {
             .openAutocompleteModal()
             .then((place) => {
                 console.log(place);
-                // place represents user's selection from the
-                // suggestions and it is a simplified Google Place object.
                 console.log('찾는 ', place.name, ' 장소의 경도와 위도 : ', place.location.latitude, place.location.longitude);
                 setMarkers(prev => [...prev, {
                     coordinate: {

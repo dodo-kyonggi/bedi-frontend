@@ -18,8 +18,8 @@ const MainStack = createStackNavigator();
 const MainStackComponent = () => {
   return (
     <MainStack.Navigator>
-      <MainStack.Screen name="Home" component={Home} />
-      <MainStack.Screen name="Goals" component={Goals} />
+      {/* <MainStack.Screen name="Home" component={Home} /> */}
+      <MainStack.Screen name="Main" component={Goals} />
       <MainStack.Screen name="Map" component={Map} />
       <MainStack.Screen name="CalendarMap" component={CalendarMap} />
     </MainStack.Navigator>
@@ -28,7 +28,7 @@ const MainStackComponent = () => {
 
 const TabBarIcon = (focused, name) => {
   let iconImagePath;
-  if (name === 'Main') {
+  if (name === 'MainScreen') {
     iconImagePath = require('./Icons/home.png')
   } else if (name === 'Ranking') {
     iconImagePath = require('./Icons/ranking.png')
@@ -46,9 +46,12 @@ const TabBarIcon = (focused, name) => {
 const App = () => {
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      style={{
+        padding: '2%'
+      }}>
       <Tab.Navigator
-        initialRouteName="Main"
+        initialRouteName="MainScreen"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused }) => (
             TabBarIcon(focused, route.name)
@@ -56,7 +59,7 @@ const App = () => {
         })}
       >
         <Tab.Screen
-          name="Main"
+          name="MainScreen"
           component={MainStackComponent}
           options={{
             headerShown: false,
