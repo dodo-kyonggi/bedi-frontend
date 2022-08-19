@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Button, TouchableOpacity, TextInput, Dimensions } from 'react-native'
+import { View, Text, Button, TouchableOpacity, TextInput, Dimensions, Image, StyleSheet } from 'react-native'
 import { Calendar } from 'react-native-calendars'
 import { addDays, format, getData, getDate, startOfWeek, parseISO, getWeek } from 'date-fns'
 import moment from 'moment'
+import plusIcon from '../../Icons/additionCircle.png'
+import closeIcon from '../../Icons/close.png'
 const SCREEN_WIDTH = Dimensions.get('screen').width
 const SCREEN_HEIGHT = Dimensions.get('screen').height
 
 const Goals = ({ navigation }) => {
+    let clickDate = new Date()
+    const [selects, setSelects] = useState({})
+    const [selectStyle, setSelectStyle] = useState({
+        backgroundColor: ''
+    })
+    const [modal, setModal] = ([
+        { gotogoal: false },
+        { gotocaln: false }
+    ])
+    const [gotogoal, setGotogoal] = useState(false)
     let time = {
-        year: today.getFullYear(),
-        month: today.getMonth() + 1,
-        date: today.getDate()
+        year: clickDate.getFullYear(),
+        month: clickDate.getMonth() + 1,
+        date: clickDate.getDate()
     }
     let timeString = ''
     if (time.month < 10) {
@@ -21,18 +33,24 @@ const Goals = ({ navigation }) => {
         timeString = `${time.year}-${time.month}-${time.date}`
     }
     let maxTimeString = `${time.year}-12-31`
-    let clickDate = new Date()
     const [items, setItems] = useState([{}]);
     const [week, setWeek] = useState([])
     const [isModal, setIsModal] = useState(false)
+    const [hasModalOpened, setHasModalOpened] = useState(false)
     const [chooseTime, setChooseTime] = useState({
         year: time.year,
         month: time.month,
         day: time.date
     })
+    let chooseTimeString = ''
+    if (chooseTime.month < 10) {
+        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.date}`
+    } else if (chooseTime.date < 10) {
+        chooseTimeString = `${chooseTime.year}-${chooseTime.month}-0${chooseTime.date}`
+    } else {
+        chooseTimeString = `${chooseTime.year}-${chooseTime.month}-${chooseTime.date}`
+    }
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
-    console.log('today: ', today)
-    console.log(chooseTime)
 
     useEffect(() => {
         const weekDays = getWeekDays(today)
@@ -42,23 +60,21 @@ const Goals = ({ navigation }) => {
     const markedDates = {
         timeString: { selected: true }
     }
-
     const onClickDate = (date) => {
-        console.log('메인 화면에서 사용자가 누른 날짜: ', date)
+        console.log('date: ', date)
     }
     const onClickModal = (day) => {
         console.log('모달창에서 사용자가 누른 날짜: ', day)
-        console.log(day.year, day.month, day.day)
         setChooseTime({
             year: day.year,
             month: day.month,
             day: day.day
         })
         setIsModal(prev => !prev)
-
+        setHasModalOpened(true)
     }
+
     const getWeekDays = (date) => {
-        console.log(date, 'datee');
         const start = startOfWeek(date, { weekStartsOn: 1 });
         const weekOfLength = 7
         const final = []
@@ -72,28 +88,42 @@ const Goals = ({ navigation }) => {
         }
         return final
     }
-
-
-
+    console.log('trued인지 false인지..', '날짜창: ', isModal, '목표창: ', gotogoal);
     return (
         <View
-            style={{ flex: 1, position: 'relative' }}>
-            <Button
-                title="위치 설정하러 가기"
-                onPress={() => navigation.navigate('Map')}
-                style={{ flex: 1 }}
-            />
+            style={{
+                flex: 1,
+                position: 'relative',
+                backgroundColor: 'white'
+            }}>
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-around',
-                paddingVertical: '5%'
+                paddingVertical: '5%',
+                backgroundColor: 'white'
             }}>
                 {week.map((weekDay) => {
+
                     return (
                         <View key={weekDay.formatted}>
                             <Text>{weekDay.formatted}</Text>
                             <TouchableOpacity
                                 onPress={() => onClickDate(weekDay.date)}
+                                style={(weekDay.date.getFullYear() === time.year && weekDay.date.getMonth() + 1 === time.month && weekDay.date.getDate() === time.day) ?
+                                    {
+                                        backgroundColor: 'green'
+                                    } :
+                                    ((hasModalOpened && weekDay.date.getFullYear() === chooseTime.year && weekDay.date.getMonth() + 1 === chooseTime.month && weekDay.date.getDate() === chooseTime.day) ?
+                                        {
+                                            backgroundColor: 'yellow',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            borderRadius: 5
+                                        } :
+                                        (selectStyle.length >= 1 ?
+                                            null :
+                                            null))
+                                }
                             >
                                 <Text>{weekDay.day}</Text>
                             </TouchableOpacity>
@@ -105,32 +135,139 @@ const Goals = ({ navigation }) => {
                 title='월별 날짜 보러가기'
                 onPress={() => setIsModal(prev => !prev)}
             />
-            {isModal ? (
-                <View style={{
-                    position: 'absolute',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'white'
-                }}>
-                    <Calendar
-                        initialDate={timeString}
-                        minDate={timeString}
-                        maxDate={maxTimeString}
-                        theme={{
-                            arrowColor: '#F2CB05',
-                            dotColor: 'green',
-                            todayTextColor: 'red',
-                            selectedDotColor: 'red'
+            <Text>
+                홍길동님, 오늘 달성하고 싶은 것은 무엇인가요? &#13;&#10;추가버튼을 눌러 하나씩 추가해주세요!
+            </Text>
+
+
+            <Button
+                title='목표 설정하러 가기'
+                onPress={() => setGotogoal(prev => !prev)}
+            />
+            {
+                isModal ? (
+                    <View style={
+                        styles.modalContainer
+                        //     position: 'absolute',
+                        //     justifyContent: 'center',
+                        //     alignItems: 'center',
+                        //     height: '100%',
+                        //     width: '100%',
+                        //     backgroundColor: 'white',
+                        //     elevation: 100,
+                        //     top: 0,
+                        //     left: 0,
+                        //     right: 0,
+                        //     bottom: 0
+                    }>
+                        <TouchableOpacity
+                            onPress={() => setIsModal(prev => !prev)}
+                            style={styles.closeContainer}
+                        >
+                            <Image
+                                source={closeIcon}
+                                style={styles.closeStyle}
+                            />
+                        </TouchableOpacity>
+                        <Calendar
+                            initialDate={timeString}
+                            minDate={timeString}
+                            maxDate={maxTimeString}
+                            theme={{
+                                arrowColor: '#F2CB05',
+                                dotColor: 'green',
+                                todayTextColor: 'red',
+                                selectedDotColor: 'red'
+                            }}
+                            onDayPress={day => {
+                                onClickModal(day)
+                            }}
+                            markedDates={{
+                                chooseTimeString: { selected: true, color: 'green' }
+                            }}
+                        />
+
+                    </View>
+                ) : null
+            }
+
+            {gotogoal ?
+                <View
+                    style={styles.modalContainer}
+                >
+                    <View
+                        style={styles.closeContainer}
+
+                    >
+                        <TouchableOpacity
+                            onPress={() => setGotogoal(prev => !prev)}
+                        >
+                            <Image
+                                source={closeIcon}
+                                style={styles.closeStyle}
+
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            color: 'black'
                         }}
-                        onDayPress={day => {
-                            onClickModal(day)
+                    >
+                        목표 작성
+                    </Text>
+                    <TextInput
+                        style={{
+                            backgroundColor: 'white',
+                            borderRadius: 30,
+                            borderColor: 'black',
+                            borderWidth: 1,
+                            width: '80%',
+                            paddingVertical: 10,
+                            paddingHorizontal: 20,
+                            fontSize: 16
                         }}
+                        placeholder='추가하고 싶은 목록을 작성해주세요...'
                     />
-                </View>
-            ) : null}
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            color: 'black'
+                        }}
+                    >
+                        위치 설정
+                    </Text>
+                    <Button
+                        title="위치 설정하러 가기"
+                        onPress={() => navigation.navigate('Map')}
+                        style={{ flex: 1 }}
+                    />
+                </View> :
+                null}
         </View>
     )
 }
 export default Goals
+
+const styles = StyleSheet.create({
+    modalContainer: {
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'white',
+        paddingHorizontal: 30,
+        paddingTop: 28
+    },
+    closeContainer: {
+        justifyContent: 'flex-end',
+        flexDirection: 'row'
+    },
+    closeStyle: {
+        width: 30,
+        height: 30
+    }
+
+})
