@@ -94,14 +94,15 @@ const Goals = ({ navigation }) => {
                 flex: 1,
                 position: 'relative',
                 backgroundColor: 'white',
-                padding: '5%'
+                justifyContent: 'space-around',
+                flexDirection: 'column'
             }}>
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-around',
-                paddingVertical: '5%',
+                paddingVertical: '2%',
                 backgroundColor: '#F8F8F8',
-                flex: 1,
+                flex: 0.8,
                 borderRadius: 6,
                 borderColor: 'black'
             }}>
@@ -112,7 +113,8 @@ const Goals = ({ navigation }) => {
                             key={weekDay.formatted}
                             style={{
                                 justifyContent: 'center',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                backgroundColor: '#F8F8F8',
                             }}
                         >
                             <View style={{ paddingVertical: 5 }}>
@@ -143,7 +145,7 @@ const Goals = ({ navigation }) => {
                 })}
             </View>
             <View
-                style={{ alignItems: 'center', flex: 9 }}
+                style={{ alignItems: 'center', flex: 2 }}
             >
                 <View style={{ paddingVertical: 10 }}>
                     <Text>
@@ -152,7 +154,7 @@ const Goals = ({ navigation }) => {
                     </Text>
                 </View>
                 <View
-                    style={{ width: '80%', paddingVertical: 10 }}
+                    style={{ width: '90%', paddingVertical: 10 }}
                 >
                     <Button
                         title='월별 날짜 보러가기'
@@ -161,13 +163,40 @@ const Goals = ({ navigation }) => {
                     />
                 </View>
                 <View
-                    style={{ width: '80%', paddingVertical: 10 }}
+                    style={{ width: '90%', paddingVertical: 10 }}
                 >
                     <Button
                         title='목표 설정하러 가기'
                         onPress={() => setGotogoal(prev => !prev)}
                         color='#fbc328'
                     />
+                </View>
+            </View>
+            <View style={{ backgroundColor: 'white', flex: 3, paddingHorizontal: 10 }}>
+                <View style={{ flex: 1 }}>
+                    <View
+                        style={styles.underlineContainer}>
+                        <Text>
+                            미달성된 목표
+                        </Text>
+                    </View>
+                    <Text>
+                        1. 헬스장 가기 {'\n'}
+                        2. 롯데마트 장보기
+
+                    </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                    <View
+                        style={styles.underlineContainer}>
+                        <Text>
+                            달성된 목표
+                        </Text>
+                    </View>
+                    <Text>
+                        1. 토익 850+ 단어 200개 암기
+                        2. 내과 다녀오기
+                    </Text>
                 </View>
             </View>
             {
@@ -236,42 +265,55 @@ const Goals = ({ navigation }) => {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <Text
-                            style={{
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                                color: 'black'
-                            }}
-                        >
-                            목표 작성
-                        </Text>
-                        <TextInput
-                            style={{
-                                backgroundColor: 'white',
-                                borderRadius: 30,
-                                borderColor: 'black',
-                                borderWidth: 1,
-                                width: '80%',
-                                paddingVertical: 10,
-                                paddingHorizontal: 20,
-                                fontSize: 16
-                            }}
-                            placeholder='추가하고 싶은 목록을 작성해주세요...'
-                        />
-                        <Text
-                            style={{
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                                color: 'black'
-                            }}
-                        >
-                            위치 설정
-                        </Text>
-                        <Button
-                            title="위치 설정하러 가기"
-                            onPress={() => navigation.navigate('Map')}
-                            style={{ flex: 1 }}
-                        />
+                        <View style={{ flex: 2 }}>
+                            <View style={styles.notUnderlineContainer}>
+                                <Text
+                                    style={{
+                                        fontSize: 18,
+                                        fontWeight: 'bold',
+                                        color: 'black'
+                                    }}
+                                >
+                                    목표 작성
+                                </Text>
+                            </View>
+                            <TextInput
+                                style={{
+                                    backgroundColor: 'white',
+                                    borderRadius: 20,
+                                    borderColor: 'black',
+                                    width: '100%',
+                                    height: '60%',
+                                    paddingVertical: 10,
+                                    paddingHorizontal: 20,
+                                    fontSize: 16,
+                                    textAlignVertical: "top"
+                                }}
+                                multiline={true}
+                                placeholder='추가하고 싶은 목록을 작성해주세요...'
+                            />
+                        </View>
+                        <View style={{ flex: 2 }}>
+                            <View style={styles.notUnderlineContainer}>
+                                <Text
+                                    style={{
+                                        fontSize: 18,
+                                        fontWeight: 'bold',
+                                        color: 'black'
+                                    }}
+                                >
+                                    위치 설정
+                                </Text>
+                            </View>
+                            <Button
+                                title="위치 설정하러 가기"
+                                onPress={() => navigation.navigate('Map')}
+                                style={{ flex: 1 }}
+                            />
+                        </View>
+                        <View>
+
+                        </View>
                     </View> :
                     null
             }
@@ -285,8 +327,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         height: '100%',
         width: '100%',
-        backgroundColor: 'white',
-        paddingTop: 28
+        backgroundColor: '#f5f5f5',
+        padding: 20,
+        flex: 1
+
     },
     closeContainer: {
         justifyContent: 'flex-end',
@@ -295,6 +339,16 @@ const styles = StyleSheet.create({
     closeStyle: {
         width: 30,
         height: 30
-    }
+    },
+    notUnderlineContainer: {
+        padding: 10
+    },
+    underlineContainer: {
+        width: '100%',
+        borderBottomColor: '#aaa',
+        marginVertical: 10,
+        borderBottomWidth: 1,
+        paddingVertical: 5
+    },
 
 })
