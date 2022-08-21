@@ -8,7 +8,7 @@ import search from '../../Icons/search.png'
 import RNGooglePlaces from 'react-native-google-places';
 import marker from '../../Icons/marker.png';
 
-function Map() {
+function Map({ navigation, route }) {
     const [initialRegion, setInitialRegion] = useState({
         latitude: 37.2507,
         longitude: 127.0616,
@@ -23,13 +23,16 @@ function Map() {
         {
             coordinate: {
                 latitude: initialRegion.latitude,
-                longitude: initialRegion.longitude
+
+                longitude: initialRegion.longitude,
+
             },
             title: "my location",
             description: 'description1',
             id: 1
         }
     ])
+
     async function requestPermission() {
         try {
             if (Platform.OS === "android") {
@@ -41,9 +44,10 @@ function Map() {
             console.log(e);
         }
     }
+
     useEffect(() => {
         requestPermission().then(result => {
-            console.log({ result });
+            // console.log({ result });
             if (result === "granted") {
                 const watchId = Geolocation.getCurrentPosition(
                     pos => {
@@ -59,7 +63,7 @@ function Map() {
             }
         })
     }
-        , [])
+        , [latitude, longitude])
     const [location, setLocation] = useState();
     const onChangeSearch = (e) => {
         setText(e.nativeEvent.text)
@@ -82,6 +86,7 @@ function Map() {
                     description: '목표로 지정하고자 하는 위치입니다',
                     id: markers.length + 1
                 }])
+
                 return
             })
             .catch(error => console.log(error.message));
@@ -93,6 +98,20 @@ function Map() {
                 title='장소검색'
                 onPress={() => searchFn()}
             />
+            <TouchableOpacity
+                style={{ width: 100, height: 100, backgroundColor: 'red' }}
+                onPress={
+                    route.params.locationValueFunction('startLat', markers[0].coordinate.latitude),
+                    route.params.locationValueFunction('startLon', markers[0].coordinate.longitude),
+                    markers[1] ? route.params.locationValueFunction('arriveLat', markers[1].coordinate.latitude) : null,
+                    markers[1] ? route.params.locationValueFunction('arriveLon', markers[1].coordinate.longitude) : null,
+                    markers[1] ? route.params.locationName(markers[1].title) : null
+                }
+            >
+                <Text>
+                    이 위치로 설정하기
+                </Text>
+            </TouchableOpacity>
             <MapView
                 provider={PROVIDER_GOOGLE}
                 initialRegion={
@@ -102,6 +121,7 @@ function Map() {
                 showsMyLocationButton={true}
                 style={{ width: '100%', height: '100%' }}
             >
+
                 {markers.map((marker) => (
                     <Marker
                         coordinate={marker.coordinate}
@@ -112,7 +132,6 @@ function Map() {
                 ))}
 
             </MapView>
-
         </View >
     );
 }

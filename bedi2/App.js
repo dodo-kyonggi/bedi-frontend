@@ -21,7 +21,7 @@ const MainStackComponent = () => {
       {/* <MainStack.Screen name="Home" component={Home} /> */}
       <MainStack.Screen name="Main" component={Goals} />
       <MainStack.Screen name="Map" component={Map} />
-      <MainStack.Screen name="CalendarMap" component={CalendarMap} />
+      {/* <MainStack.Screen name="CalendarMap" component={CalendarMap} /> */}
     </MainStack.Navigator>
   );
 }

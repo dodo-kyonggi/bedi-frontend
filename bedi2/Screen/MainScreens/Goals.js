@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Button, TouchableOpacity, TextInput, Dimensions, Image, StyleSheet } from 'react-native'
+import { View, Text, Button, TouchableOpacity, TextInput, Dimensions, Image, StyleSheet, Alert } from 'react-native'
 import { Calendar } from 'react-native-calendars'
 import { addDays, format, getData, getDate, startOfWeek, parseISO, getWeek } from 'date-fns'
 import moment from 'moment'
@@ -42,6 +42,12 @@ const Goals = ({ navigation }) => {
         month: time.month,
         day: time.date
     })
+    const [startLat, setStartLat] = useState()
+    const [arriveLat, setArriveLat] = useState()
+    const [startLon, setStartLon] = useState()
+    const [arriveLon, setArriveLon] = useState()
+    const [placeName, setPlaceName] = useState('')
+    const [goalTextInput, setGoalTextInput] = useState('')
     let chooseTimeString = ''
     if (chooseTime.month < 10) {
         chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.date}`
@@ -74,6 +80,24 @@ const Goals = ({ navigation }) => {
         setHasModalOpened(true)
     }
 
+    const locationValueFunction = (name, data) => {
+        console.log('부모 컴포넌트에서 수행')
+        if (name === 'startLat') {
+            setStartLat(data)
+        } else if (name === 'startLon') {
+            setStartLon(data)
+        } else if (name === 'arriveLat') {
+            setArriveLat(data)
+        } else if (name === 'arriveLon') {
+            setArriveLon(data)
+        }
+
+    }
+
+    const locationName = (getplaceName) => {
+        setPlaceName(getplaceName)
+    }
+
     const getWeekDays = (date) => {
         const start = startOfWeek(date, { weekStartsOn: 1 });
         const weekOfLength = 7
@@ -87,6 +111,22 @@ const Goals = ({ navigation }) => {
             })
         }
         return final
+    }
+    const setGoal = () => {
+        if (placeName === '' || goalTextInput === '') {
+            Alert.alert(
+                '!잠깐만요!',
+                '모두 입력해주세요!', [
+                {
+                    text: '네, 모두 채울게요!', onPress: () => { }, style: 'default'
+                }
+            ], {
+                cancelable: false
+            }
+            )
+        } else {
+            setGotogoal(prev => !prev)
+        }
     }
     return (
         <View
@@ -181,9 +221,8 @@ const Goals = ({ navigation }) => {
                         </Text>
                     </View>
                     <Text>
-                        1. 헬스장 가기 {'\n'}
-                        2. 롯데마트 장보기
-
+                        1. 학원 등록하기{'\n'}
+                        2. 롯데마트 00약국 가서 밴드 사기
                     </Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -194,7 +233,7 @@ const Goals = ({ navigation }) => {
                         </Text>
                     </View>
                     <Text>
-                        1. 토익 850+ 단어 200개 암기
+                        1. 토익 850+ 단어 200개 암기{'\n'}
                         2. 내과 다녀오기
                     </Text>
                 </View>
@@ -203,17 +242,6 @@ const Goals = ({ navigation }) => {
                 isModal ? (
                     <View style={
                         styles.modalContainer
-                        //     position: 'absolute',
-                        //     justifyContent: 'center',
-                        //     alignItems: 'center',
-                        //     height: '100%',
-                        //     width: '100%',
-                        //     backgroundColor: 'white',
-                        //     elevation: 100,
-                        //     top: 0,
-                        //     left: 0,
-                        //     right: 0,
-                        //     bottom: 0
                     }>
                         <TouchableOpacity
                             onPress={() => setIsModal(prev => !prev)}
@@ -224,23 +252,25 @@ const Goals = ({ navigation }) => {
                                 style={styles.closeStyle}
                             />
                         </TouchableOpacity>
-                        <Calendar
-                            initialDate={timeString}
-                            minDate={timeString}
-                            maxDate={maxTimeString}
-                            theme={{
-                                arrowColor: '#F2CB05',
-                                dotColor: 'green',
-                                todayTextColor: 'red',
-                                selectedDotColor: 'red'
-                            }}
-                            onDayPress={day => {
-                                onClickModal(day)
-                            }}
-                            markedDates={{
-                                chooseTimeString: { selected: true, color: 'green' }
-                            }}
-                        />
+                        <View style={{ justifyContent: 'center', alignItems: 'center', height: '80%' }}>
+                            <Calendar
+                                initialDate={timeString}
+                                minDate={timeString}
+                                maxDate={maxTimeString}
+                                theme={{
+                                    arrowColor: '#F2CB05',
+                                    dotColor: 'green',
+                                    todayTextColor: 'red',
+                                    selectedDotColor: 'red'
+                                }}
+                                onDayPress={day => {
+                                    onClickModal(day)
+                                }}
+                                markedDates={{
+                                    chooseTimeString: { selected: true, color: 'green' }
+                                }}
+                            />
+                        </View>
 
                     </View>
                 ) : null
@@ -278,19 +308,13 @@ const Goals = ({ navigation }) => {
                                 </Text>
                             </View>
                             <TextInput
-                                style={{
-                                    backgroundColor: 'white',
-                                    borderRadius: 20,
-                                    borderColor: 'black',
-                                    width: '100%',
-                                    height: '60%',
-                                    paddingVertical: 10,
-                                    paddingHorizontal: 20,
-                                    fontSize: 16,
-                                    textAlignVertical: "top"
-                                }}
+                                style={styles.whitebox}
                                 multiline={true}
                                 placeholder='추가하고 싶은 목록을 작성해주세요...'
+                                value={goalTextInput}
+                                onChangeText={event => {
+                                    setGoalTextInput(event.nativeEvent.text)
+                                }}
                             />
                         </View>
                         <View style={{ flex: 2 }}>
@@ -307,12 +331,55 @@ const Goals = ({ navigation }) => {
                             </View>
                             <Button
                                 title="위치 설정하러 가기"
-                                onPress={() => navigation.navigate('Map')}
+                                onPress={() => (
+                                    navigation.navigate('Map', {
+                                        locationValueFunction, locationName
+                                    })
+                                )}
                                 style={{ flex: 1 }}
                             />
-                        </View>
-                        <View>
+                            <View style={{
+                                backgroundColor: 'white',
+                                borderRadius: 20,
+                                width: '100%',
+                                marginVertical: 10,
+                                paddingVertical: 10,
+                                paddingHorizontal: 20,
+                                textAlignVertical: "top"
+                            }}>
+                                {placeName ?
+                                    <Text style={{
+                                        fontSize: 16,
+                                        fontWeight: 'bold'
+                                    }}>
+                                        홍길동님은 {placeName} 위치로 이동하고 싶어합니다.
+                                    </Text> :
+                                    <Text style={{
+                                        fontSize: 16,
+                                        fontWeight: 'bold',
+                                        color: 'tomato'
+                                    }}>
+                                        위치 설정을 해주세요.
+                                    </Text>
+                                }
 
+                            </View>
+                        </View>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <TouchableOpacity
+                                style={styles.submitNclose}
+                                onPress={() => setGoal()}
+                            >
+                                <Text style={{ color: 'black' }}>
+                                    목표 설정하기
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.submitNclose}>
+                                <Text style={{ color: 'black' }}>
+                                    닫기
+                                </Text>
+                            </TouchableOpacity>
                         </View>
                     </View> :
                     null
@@ -329,12 +396,13 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#f5f5f5',
         padding: 20,
-        flex: 1
+        flex: 1,
 
     },
     closeContainer: {
         justifyContent: 'flex-end',
-        flexDirection: 'row'
+        flexDirection: 'row',
+
     },
     closeStyle: {
         width: 30,
@@ -350,5 +418,23 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         paddingVertical: 5
     },
-
+    whitebox: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        width: '100%',
+        height: '60%',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        fontSize: 16,
+        textAlignVertical: "top"
+    },
+    submitNclose: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        height: '30%',
+        marginHorizontal: 5,
+        borderRadius: 20
+    }
 })
