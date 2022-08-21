@@ -5,6 +5,7 @@ import { addDays, format, getData, getDate, startOfWeek, parseISO, getWeek } fro
 import moment from 'moment'
 import plusIcon from '../../Icons/additionCircle.png'
 import closeIcon from '../../Icons/close.png'
+import axios from 'axios'
 const SCREEN_WIDTH = Dimensions.get('screen').width
 const SCREEN_HEIGHT = Dimensions.get('screen').height
 
@@ -48,6 +49,7 @@ const Goals = ({ navigation }) => {
     const [arriveLon, setArriveLon] = useState()
     const [placeName, setPlaceName] = useState('')
     const [goalTextInput, setGoalTextInput] = useState('')
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1MTQ5NjQ5NjMzNTIyMTM2MTQiLCJleHAiOjE2NjEwODkxNTUsImlhdCI6MTY2MDQ4NDM1NSwidXNlcm5hbWUiOiLtlZztnazrgpgifQ.uAPCiNiyQ0rCqPElrkgzzJXNYLlUNmh-a7Q22fi2bVI'
     let chooseTimeString = ''
     if (chooseTime.month < 10) {
         chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.date}`
@@ -61,8 +63,21 @@ const Goals = ({ navigation }) => {
     useEffect(() => {
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
-        console.log('weekDays:', weekDays)
+        console.log('useeffect되나?')
+        getData()
     }, [chooseTime])
+
+    const getData = () => {
+        axios.get('http://beingdiligent.tk:8080/goal/show?date=2022-08-14',
+            {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                }
+            })
+            .then(res => console.log(res))
+            .catch(error => console.log(error))
+    }
+
     const markedDates = {
         timeString: { selected: true }
     }
@@ -128,6 +143,8 @@ const Goals = ({ navigation }) => {
             setGotogoal(prev => !prev)
         }
     }
+
+
     return (
         <View
             style={{
