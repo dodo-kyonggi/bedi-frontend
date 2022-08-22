@@ -10,10 +10,10 @@ import marker from '../../Icons/marker.png';
 
 function Map({ navigation, route }) {
     const [initialRegion, setInitialRegion] = useState({
-        latitude: 37.2507,
-        longitude: 127.0616,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05
+        latitude: 37.250712,
+        longitude: 127.061612,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
     })
     const [latitude, setLatitude] = useState(null)
     const [longitude, setLongitude] = useState(null)
@@ -101,11 +101,12 @@ function Map({ navigation, route }) {
             <TouchableOpacity
                 style={{ width: 100, height: 100, backgroundColor: 'red' }}
                 onPress={
-                    route.params.locationValueFunction('startLat', markers[0].coordinate.latitude),
-                    route.params.locationValueFunction('startLon', markers[0].coordinate.longitude),
-                    markers[1] ? route.params.locationValueFunction('arriveLat', markers[1].coordinate.latitude) : null,
-                    markers[1] ? route.params.locationValueFunction('arriveLon', markers[1].coordinate.longitude) : null,
-                    markers[1] ? route.params.locationName(markers[1].title) : null
+                    route.params.setStartLat(markers[0].coordinate.latitude),
+                    route.params.setStartLon(markers[0].coordinate.longitude),
+                    markers[1] ? route.params.setArriveLat(markers[1].coordinate.latitude.toFixed(6)) : null,
+                    markers[1] ? route.params.setArriveLon(markers[1].coordinate.longitude.toFixed(6)) : null,
+                    markers[1] ? route.params.setPlaceName(markers[1].title) : null,
+                    navigation.goBack
                 }
             >
                 <Text>

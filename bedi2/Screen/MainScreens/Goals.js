@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Button, TouchableOpacity, TextInput, Dimensions, Image, StyleSheet, Alert } from 'react-native'
+import {
+    View, Text, Button, TouchableOpacity, TextInput, Dimensions, Image, StyleSheet, Alert,
+    KeyboardAvoidingView
+} from 'react-native'
 import { Calendar } from 'react-native-calendars'
 import { addDays, format, getData, getDate, startOfWeek, parseISO, getWeek } from 'date-fns'
 import moment from 'moment'
 import plusIcon from '../../Icons/additionCircle.png'
 import closeIcon from '../../Icons/close.png'
 import axios from 'axios'
+import { loadPartialConfigAsync } from '@babel/core'
 const SCREEN_WIDTH = Dimensions.get('screen').width
 const SCREEN_HEIGHT = Dimensions.get('screen').height
 
@@ -43,20 +47,20 @@ const Goals = ({ navigation }) => {
         month: time.month,
         day: time.date
     })
-    const [startLat, setStartLat] = useState()
-    const [arriveLat, setArriveLat] = useState()
-    const [startLon, setStartLon] = useState()
-    const [arriveLon, setArriveLon] = useState()
+    const [startLat, setStartLat] = useState(0)
+    const [arriveLat, setArriveLat] = useState(0)
+    const [startLon, setStartLon] = useState(0)
+    const [arriveLon, setArriveLon] = useState(0)
     const [placeName, setPlaceName] = useState('')
     const [goalTextInput, setGoalTextInput] = useState('')
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1MTQ5NjQ5NjMzNTIyMTM2MTQiLCJleHAiOjE2NjEwODkxNTUsImlhdCI6MTY2MDQ4NDM1NSwidXNlcm5hbWUiOiLtlZztnazrgpgifQ.uAPCiNiyQ0rCqPElrkgzzJXNYLlUNmh-a7Q22fi2bVI'
-    let chooseTimeString = ''
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjU1MzA4NTMwIiwiZXhwIjoxNjYxMTU4MDM1LCJpYXQiOjE2NjExNTYyMzUsInVzZXJuYW1lIjoic29uZ2hlaSJ9.FI_k9PIU1KBk2AY7xFbDCcaCTLE6scibpnZJ-HXOefE'
+    let chooseTimeString = ""
     if (chooseTime.month < 10) {
-        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.date}`
+        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.day}`
     } else if (chooseTime.date < 10) {
-        chooseTimeString = `${chooseTime.year}-${chooseTime.month}-0${chooseTime.date}`
+        chooseTimeString = `${chooseTime.year}-${chooseTime.month}-0${chooseTime.day}`
     } else {
-        chooseTimeString = `${chooseTime.year}-${chooseTime.month}-${chooseTime.date}`
+        chooseTimeString = `${chooseTime.year}-${chooseTime.month}-${chooseTime.day}`
     }
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
@@ -64,11 +68,34 @@ const Goals = ({ navigation }) => {
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
         console.log('useeffect되나?')
-        getData()
+        // console.log('아래는 회원가입-------------------')
+        // register()
+        // console.log('아래는 로그인-------------------')
+        // login()
+        // console.log('아래는 목표 저장-------------------')
+        // saveGoalData()
     }, [chooseTime])
 
+    const register = () => {
+        axios.post('http://beingdiligent.tk/user/signup', {
+            'username': 'songhei',
+            'password': 'thd02026',
+            'email': 'ghenrhkwk88@gmail.com',
+            'phone': '010-7461-1368'
+        })
+            .then(res => console.log(res))
+            .catch(e => console.log(e))
+    }
+    const login = () => {
+        axios.post('http://beingdiligent.tk/user/login', {
+            'password': 'thd02026',
+            'email': 'ghenrhkwk88@gmail.com',
+        })
+            .then(res => console.log(res))
+            .catch(e => console.log(e))
+    }
     const getData = () => {
-        axios.get('http://beingdiligent.tk:8080/goal/show?date=2022-08-14',
+        axios.get('http://beingdiligent.tk:8080/goal/show?date=2022-08-22',
             {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -78,13 +105,44 @@ const Goals = ({ navigation }) => {
             .catch(error => console.log(error))
     }
 
+    const saveGoalData = () => {
+        // console.log(goalTextInput, arriveLat, arriveLon, startLat, startLon, chooseTimeString)
+        axios.post('http://beingdiligent.tk:8080/goal/create',
+            {
+                "date": chooseTimeString,
+                "title": goalTextInput,
+                "arrive_lat": arriveLat,
+                "arrive_lon": arriveLon,
+                "start_lat": startLat,
+                "start_lon": startLon
+            },
+
+            {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            }
+
+        )
+            .then(res => {
+                console.log('응답 성공', res)
+                return true
+            })
+            .catch(error => {
+                console.log('응답 에러', error.response)
+                Alert.alert(error.response.data.errorMessage)
+                return false
+            })
+    }
+
+
     const markedDates = {
         timeString: { selected: true }
     }
     const onClickDate = (date) => {
         console.log('date: ', date)
     }
-    const onClickModal = (day) => {
+    const onClickCalendarModal = (day) => {
         console.log('모달창에서 사용자가 누른 날짜: ', day)
         setChooseTime({
             year: day.year,
@@ -140,7 +198,9 @@ const Goals = ({ navigation }) => {
             }
             )
         } else {
-            setGotogoal(prev => !prev)
+            if (saveGoalData() === true) {
+                setGotogoal(prev => !prev)
+            }
         }
     }
 
@@ -281,7 +341,7 @@ const Goals = ({ navigation }) => {
                                     selectedDotColor: 'red'
                                 }}
                                 onDayPress={day => {
-                                    onClickModal(day)
+                                    onClickCalendarModal(day)
                                 }}
                                 markedDates={{
                                     chooseTimeString: { selected: true, color: 'green' }
@@ -330,7 +390,7 @@ const Goals = ({ navigation }) => {
                                 placeholder='추가하고 싶은 목록을 작성해주세요...'
                                 value={goalTextInput}
                                 onChangeText={event => {
-                                    setGoalTextInput(event.nativeEvent.text)
+                                    setGoalTextInput(event)
                                 }}
                             />
                         </View>
@@ -349,9 +409,16 @@ const Goals = ({ navigation }) => {
                             <Button
                                 title="위치 설정하러 가기"
                                 onPress={() => (
-                                    navigation.navigate('Map', {
-                                        locationValueFunction, locationName
-                                    })
+                                    navigation.navigate('Map',
+                                        {
+                                            setArriveLat,
+                                            setArriveLon,
+                                            setStartLat,
+                                            setStartLon,
+                                            setPlaceName
+                                        }
+                                    ),
+                                    console.log(arriveLat, arriveLon, startLat, startLon)
                                 )}
                                 style={{ flex: 1 }}
                             />
