@@ -53,7 +53,8 @@ const Goals = ({ navigation }) => {
     const [arriveLon, setArriveLon] = useState(0)
     const [placeName, setPlaceName] = useState('')
     const [goalTextInput, setGoalTextInput] = useState('')
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjU1MzA4NTMwIiwiZXhwIjoxNjYxMTU4MDM1LCJpYXQiOjE2NjExNTYyMzUsInVzZXJuYW1lIjoic29uZ2hlaSJ9.FI_k9PIU1KBk2AY7xFbDCcaCTLE6scibpnZJ-HXOefE'
+    const [userDatas, setUserDatas] = useState([])
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMzM2ODUwMDkyIiwiZXhwIjoxNjYxMjM5Njc5LCJpYXQiOjE2NjEyMzY2Nzl9.X85kTUDtkOkQRyRM8Bj56FHJcECK9mnsjT0_0AruAzA'
     let chooseTimeString = ""
     if (chooseTime.month < 10) {
         chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.day}`
@@ -74,35 +75,40 @@ const Goals = ({ navigation }) => {
         // login()
         // console.log('아래는 목표 저장-------------------')
         // saveGoalData()
-    }, [chooseTime])
+        console.log('아래는 목표 불러오기-------------------')
+        getData()
+    }, [chooseTime, gotogoal])
 
     const register = () => {
         axios.post('http://beingdiligent.tk/user/signup', {
-            'username': 'songhei',
+            'username': 'songheechoii',
             'password': 'thd02026',
-            'email': 'ghenrhkwk88@gmail.com',
-            'phone': '010-7461-1368'
+            'email': 'songheechoii@naver.com',
+            'phone': '010-7461-1111'
         })
             .then(res => console.log(res))
-            .catch(e => console.log(e))
+            .catch(e => console.log(e.response))
     }
     const login = () => {
         axios.post('http://beingdiligent.tk/user/login', {
             'password': 'thd02026',
-            'email': 'ghenrhkwk88@gmail.com',
+            'email': 'songheechoii@naver.com',
         })
             .then(res => console.log(res))
-            .catch(e => console.log(e))
+            .catch(e => console.log(e.response))
     }
     const getData = () => {
-        axios.get('http://beingdiligent.tk:8080/goal/show?date=2022-08-22',
+        axios.get('http://beingdiligent.tk:8080/goal/show?date=2022-08-23',
             {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
                 }
             })
-            .then(res => console.log(res))
-            .catch(error => console.log(error))
+            .then(res => {
+                console.log(res.data)
+                setUserDatas(res.data)
+            })
+            .catch(error => console.log(error.response))
     }
 
     const saveGoalData = () => {
@@ -125,13 +131,16 @@ const Goals = ({ navigation }) => {
 
         )
             .then(res => {
-                console.log('응답 성공', res)
-                return true
+                console.log('목표 저장 [성공]', res)
+                setGotogoal(prev => !prev)
+                setGoalTextInput('')
+                setPlaceName('')
+
             })
             .catch(error => {
-                console.log('응답 에러', error.response)
+                console.log('목표 저장 [에러]', error.response)
                 Alert.alert(error.response.data.errorMessage)
-                return false
+
             })
     }
 
@@ -198,9 +207,7 @@ const Goals = ({ navigation }) => {
             }
             )
         } else {
-            if (saveGoalData() === true) {
-                setGotogoal(prev => !prev)
-            }
+            saveGoalData()
         }
     }
 
@@ -241,7 +248,7 @@ const Goals = ({ navigation }) => {
                                 onPress={() => onClickDate(weekDay.date)}
                                 style={(weekDay.date.getFullYear() === time.year && weekDay.date.getMonth() + 1 === time.month && weekDay.date.getDate() === time.day) ?
                                     {
-                                        backgroundColor: 'green'
+                                        backgroundColor: 'yellow'
                                     } :
                                     ((hasModalOpened && weekDay.date.getFullYear() === chooseTime.year && weekDay.date.getMonth() + 1 === chooseTime.month && weekDay.date.getDate() === chooseTime.day) ?
                                         {
@@ -297,10 +304,36 @@ const Goals = ({ navigation }) => {
                             미달성된 목표
                         </Text>
                     </View>
-                    <Text>
-                        1. 학원 등록하기{'\n'}
-                        2. 롯데마트 00약국 가서 밴드 사기
-                    </Text>
+                    {userDatas.map((item, index) => {
+                        if (item.success === false) {
+                            if (item.date === chooseTimeString) {
+                                return (
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        marginVertical: '1%',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <Text key={item.id}>
+                                            {index + 1}. {item.title}
+                                        </Text>
+                                        <TouchableOpacity
+                                            style={{
+                                                backgroundColor: '#33CDFF',
+
+                                                paddingHorizontal: '5%',
+                                                borderRadius: 20,
+                                                paddingVertical: '1%'
+                                            }}>
+                                            <Text>
+                                                달성하기
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            }
+                        }
+                    })}
                 </View>
                 <View style={{ flex: 1 }}>
                     <View
