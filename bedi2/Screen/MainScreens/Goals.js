@@ -10,6 +10,9 @@ import plusIcon from '../../Icons/additionCircle.png'
 import closeIcon from '../../Icons/close.png'
 import axios from 'axios'
 import { loadPartialConfigAsync } from '@babel/core'
+import { PermissionsAndroid } from 'react-native'
+import Geolocation from "react-native-geolocation-service";
+import { ScrollView } from 'react-native-gesture-handler'
 const SCREEN_WIDTH = Dimensions.get('screen').width
 const SCREEN_HEIGHT = Dimensions.get('screen').height
 
@@ -54,7 +57,12 @@ const Goals = ({ navigation }) => {
     const [placeName, setPlaceName] = useState('')
     const [goalTextInput, setGoalTextInput] = useState('')
     const [userDatas, setUserDatas] = useState([])
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMzM2ODUwMDkyIiwiZXhwIjoxNjYxMjM5Njc5LCJpYXQiOjE2NjEyMzY2Nzl9.X85kTUDtkOkQRyRM8Bj56FHJcECK9mnsjT0_0AruAzA'
+    const [userAchievedDatas, setUserAchievedDatas] = useState([])
+    const [currentPosition, setCurrentPosition] = useState({})
+    const [reTextInput, setReTextInput] = useState([])
+    const [optionClickMotion, setOptionClickMotion] = useState(false)
+    const [id, setId] = useState(0)
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzcxNDEyODAwIiwiZXhwIjoxNjYxMzM0NjY1LCJpYXQiOjE2NjEzMTMwNjUsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.qhDvGFS5tXutIh93fKD4AnhjI-x6irsZiQSW589v7b4'
     let chooseTimeString = ""
     if (chooseTime.month < 10) {
         chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.day}`
@@ -68,22 +76,42 @@ const Goals = ({ navigation }) => {
     useEffect(() => {
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
-        console.log('useeffect되나?')
         // console.log('아래는 회원가입-------------------')
         // register()
         // console.log('아래는 로그인-------------------')
         // login()
         // console.log('아래는 목표 저장-------------------')
         // saveGoalData()
-        console.log('아래는 목표 불러오기-------------------')
+        // console.log('아래는 목표 불러오기-------------------')
         getData()
-    }, [chooseTime, gotogoal])
+        //Reaccesstoken()
+        // console.log('reTextInput', reTextInput)
+        const geoLocation = () => {
+            Geolocation.getCurrentPosition(
+                position => {
+                    const latitude = JSON.stringify(position.coords.latitude);
+                    const longitude = JSON.stringify(position.coords.longitude);
 
+                    setCurrentPosition({
+                        latitude: latitude,
+                        longitude: longitude
+                    });
+                },
+                error => { console.log(error.code, error.message); },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+            )
+        }
+        if (userDatas === []) {
+            setGoalTextInput('')
+        }
+        geoLocation()
+        console.log(timeString)
+    }, [chooseTime, gotogoal, optionClickMotion])
     const register = () => {
         axios.post('http://beingdiligent.tk/user/signup', {
-            'username': 'songheechoii',
+            'username': 'songheeco',
             'password': 'thd02026',
-            'email': 'songheechoii@naver.com',
+            'email': 'songheeco@yahoo.com',
             'phone': '010-7461-1111'
         })
             .then(res => console.log(res))
@@ -92,13 +120,28 @@ const Goals = ({ navigation }) => {
     const login = () => {
         axios.post('http://beingdiligent.tk/user/login', {
             'password': 'thd02026',
-            'email': 'songheechoii@naver.com',
+            'email': 'songheeco@yahoo.com',
         })
             .then(res => console.log(res))
             .catch(e => console.log(e.response))
     }
     const getData = () => {
-        axios.get('http://beingdiligent.tk:8080/goal/show?date=2022-08-23',
+        axios.get(`http://beingdiligent.tk:8080/goal/show?date=${chooseTimeString}`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                }
+            })
+            .then(res => {
+                console.log(res.data)
+                setUserDatas(res.data)
+
+            })
+            .catch(error => console.log(error.response))
+    }
+
+    const Reaccesstoken = () => {
+        axios.get('http://beingdiligent.tk/user/refresh',
             {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -110,7 +153,6 @@ const Goals = ({ navigation }) => {
             })
             .catch(error => console.log(error.response))
     }
-
     const saveGoalData = () => {
         // console.log(goalTextInput, arriveLat, arriveLon, startLat, startLon, chooseTimeString)
         axios.post('http://beingdiligent.tk:8080/goal/create',
@@ -133,9 +175,41 @@ const Goals = ({ navigation }) => {
             .then(res => {
                 console.log('목표 저장 [성공]', res)
                 setGotogoal(prev => !prev)
+                setUserDatas([...userDatas, res.data])
+
                 setGoalTextInput('')
                 setPlaceName('')
 
+
+            })
+            .catch(error => {
+                console.log('목표 저장 [에러]', error.response)
+                Alert.alert(error.response)
+
+            })
+    }
+
+
+    const goalAchieve = (goalId) => {
+        console.log(goalId, currentPosition)
+        axios.post('http://beingdiligent.tk:8080/goal/success',
+            {
+                "goalId": goalId,
+                "nowLat": currentPosition.latitude,
+                "nowLon": currentPosition.longitude
+            },
+
+            {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            }
+
+        )
+            .then(res => {
+                console.log('목표 성취!!', res)
+                userDatas.filter((element) => element.id !== goalId)
+                userAchievedDatas(res.data)
             })
             .catch(error => {
                 console.log('목표 저장 [에러]', error.response)
@@ -144,12 +218,30 @@ const Goals = ({ navigation }) => {
             })
     }
 
+    async function requestPermission() {
+        try {
+            if (Platform.OS === "android") {
+                return await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                );
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const markedDates = {
         timeString: { selected: true }
     }
     const onClickDate = (date) => {
-        console.log('date: ', date)
+        console.log('date: ', date.date)
+        let d = new Date(date.date)
+        setChooseTime({
+            year: d.getFullYear(),
+            month: d.getMonth() + 1,
+            day: d.getDay()
+        })
+
     }
     const onClickCalendarModal = (day) => {
         console.log('모달창에서 사용자가 누른 날짜: ', day)
@@ -160,6 +252,9 @@ const Goals = ({ navigation }) => {
         })
         setIsModal(prev => !prev)
         setHasModalOpened(true)
+        if (timeString !== chooseTimeString) {
+            console.log('사용자가 누른 날짜는 오늘과 다른 날짜임!!')
+        }
     }
 
     const locationValueFunction = (name, data) => {
@@ -194,7 +289,66 @@ const Goals = ({ navigation }) => {
         }
         return final
     }
-    const setGoal = () => {
+
+    const modifyBtn = (title, id) => {
+        setGoalTextInput(title)
+        setId(id)
+
+    }
+    const findAddress = () => {
+        const response = fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${arriveLat},${arriveLon}&language=ko&key=AIzaSyAKE8BOliJLqw7UzOP1Ub3SIcl1EliTfkc`,
+        ).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('udonPeople ' + responseJson.results[0].formatted_address);
+            }).catch((err) => console.log("udonPeople error : " + err));
+    }
+    const modifygoal = () => {
+        axios.put('http://beingdiligent.tk:8080/goal/update',
+            {
+                "goalId": id,
+                "date": chooseTimeString,
+                "title": goalTextInput,
+                "arrive_lat": arriveLat,
+                "arrive_lon": arriveLon,
+                "start_lat": currentPosition.latitude,
+                "start_lon": currentPosition.longitude
+            },
+
+            {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            }
+
+        )
+            .then(res => {
+                console.log('목표 수정!!', res)
+                setGotogoal(prev => !prev)
+            })
+            .catch(error => {
+                console.log('목표 수정 [에러]', error.response)
+                Alert.alert(error.response.data.errorMessage)
+
+            })
+
+    }
+
+    const goalDelete = (id) => {
+        axios.get(`http://beingdiligent.tk:8080/goal/delete/${id}`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                }
+            })
+            .then(res => {
+                console.log(res.data)
+                setOptionClickMotion(prev => !prev)
+            })
+            .catch(error => console.log(error.response))
+    }
+
+    const setGoal = (saved) => {
         if (placeName === '' || goalTextInput === '') {
             Alert.alert(
                 '!잠깐만요!',
@@ -207,7 +361,12 @@ const Goals = ({ navigation }) => {
             }
             )
         } else {
-            saveGoalData()
+            if (saved === false) {
+                saveGoalData()
+            } else {
+                modifygoal()
+
+            }
         }
     }
 
@@ -245,10 +404,10 @@ const Goals = ({ navigation }) => {
                                 <Text>{weekDay.formatted}</Text>
                             </View>
                             <TouchableOpacity
-                                onPress={() => onClickDate(weekDay.date)}
-                                style={(weekDay.date.getFullYear() === time.year && weekDay.date.getMonth() + 1 === time.month && weekDay.date.getDate() === time.day) ?
+                                onPress={() => onClickDate(weekDay)}
+                                style={weekDay.date.getFullYear() === time.year && weekDay.date.getMonth() === time.month && weekDay.date.getDay() === time.day ?
                                     {
-                                        backgroundColor: 'yellow'
+                                        backgroundColor: 'tomato'
                                     } :
                                     ((hasModalOpened && weekDay.date.getFullYear() === chooseTime.year && weekDay.date.getMonth() + 1 === chooseTime.month && weekDay.date.getDate() === chooseTime.day) ?
                                         {
@@ -291,7 +450,11 @@ const Goals = ({ navigation }) => {
                 >
                     <Button
                         title='목표 설정하러 가기'
-                        onPress={() => setGotogoal(prev => !prev)}
+                        onPress={() => {
+                            setGotogoal(prev => !prev)
+                            setGoalTextInput('')
+                            setPlaceName('')
+                        }}
                         color='#fbc328'
                     />
                 </View>
@@ -304,36 +467,95 @@ const Goals = ({ navigation }) => {
                             미달성된 목표
                         </Text>
                     </View>
-                    {userDatas.map((item, index) => {
-                        if (item.success === false) {
-                            if (item.date === chooseTimeString) {
-                                return (
-                                    <View style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        marginVertical: '1%',
-                                        justifyContent: 'space-between'
-                                    }}>
-                                        <Text key={item.id}>
-                                            {index + 1}. {item.title}
-                                        </Text>
-                                        <TouchableOpacity
-                                            style={{
-                                                backgroundColor: '#33CDFF',
-
-                                                paddingHorizontal: '5%',
-                                                borderRadius: 20,
-                                                paddingVertical: '1%'
-                                            }}>
-                                            <Text>
-                                                달성하기
+                    <ScrollView>
+                        {userDatas ? userDatas.map((item, index) => {
+                            if (item.success === false) {
+                                if (item.date === chooseTimeString) {
+                                    return (
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            marginVertical: '1%',
+                                            justifyContent: 'space-between'
+                                        }}
+                                            key={item.id}
+                                        >
+                                            <Text
+                                                style={{ width: '50%' }}>
+                                                {index}. {item.title}
                                             </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                )
+                                            <View style={{
+                                                flexDirection: 'column',
+                                                justifyContent: 'center',
+                                                alignItems: 'center'
+                                            }}>
+                                                <View style={{
+                                                    flexDirection: 'row',
+
+                                                }}>
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            backgroundColor: '#33CDFF',
+                                                            paddingHorizontal: '5%',
+                                                            borderRadius: 20,
+                                                            paddingVertical: '1%',
+                                                            marginHorizontal: '1%',
+
+                                                        }}
+                                                        onPress={() => {
+                                                            goalAchieve(item.id)
+                                                        }}
+                                                    >
+                                                        <Text>
+                                                            달성하기
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            backgroundColor: '#79CACC',
+                                                            paddingHorizontal: '5%',
+                                                            borderRadius: 20,
+                                                            paddingVertical: '1%',
+                                                            marginHorizontal: '1%'
+                                                        }}
+                                                        onPress={() => {
+                                                            setGotogoal(prev => !prev)
+                                                            setArriveLat(item.lat)
+                                                            setArriveLon(item.lon)
+                                                            findAddress()
+                                                            modifyBtn(item.title, item.id)
+                                                        }}
+                                                    >
+                                                        <Text>
+                                                            수정하기
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <TouchableOpacity
+                                                    style={{
+                                                        backgroundColor: '#33CDFF',
+                                                        paddingHorizontal: '5%',
+                                                        borderRadius: 20,
+                                                        paddingVertical: '1%',
+                                                        marginHorizontal: '1%',
+                                                        width: 73
+                                                    }}
+                                                    onPress={() => {
+                                                        goalDelete(item.id)
+                                                    }}
+                                                >
+                                                    <Text>
+                                                        삭제하기
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+
+                                        </View>
+                                    )
+                                }
                             }
-                        }
-                    })}
+                        }) : null}
+                    </ScrollView>
                 </View>
                 <View style={{ flex: 1 }}>
                     <View
@@ -342,12 +564,29 @@ const Goals = ({ navigation }) => {
                             달성된 목표
                         </Text>
                     </View>
-                    <Text>
-                        1. 토익 850+ 단어 200개 암기{'\n'}
-                        2. 내과 다녀오기
-                    </Text>
+                    {userDatas ? userDatas.map((item, index) => {
+                        if (item.success === true) {
+                            if (item.date === chooseTimeString) {
+                                return (
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        marginVertical: '1%',
+                                        justifyContent: 'space-between'
+                                    }}
+                                        key={item.id}
+                                    >
+                                        <Text>
+                                            {index + 1}. {item.title}
+                                        </Text>
+                                    </View>
+                                )
+                            }
+                        }
+                    }) : null}
                 </View>
             </View>
+
             {
                 isModal ? (
                     <View style={
@@ -375,6 +614,7 @@ const Goals = ({ navigation }) => {
                                 }}
                                 onDayPress={day => {
                                     onClickCalendarModal(day)
+                                    console.log(day)
                                 }}
                                 markedDates={{
                                     chooseTimeString: { selected: true, color: 'green' }
@@ -387,7 +627,7 @@ const Goals = ({ navigation }) => {
             }
 
             {
-                gotogoal ?
+                gotogoal && userDatas.length ?
                     <View
                         style={styles.modalContainer}
                     >
@@ -485,7 +725,7 @@ const Goals = ({ navigation }) => {
                         <View style={{ flex: 1, flexDirection: 'row' }}>
                             <TouchableOpacity
                                 style={styles.submitNclose}
-                                onPress={() => setGoal()}
+                                onPress={() => setGoal(false)}
                             >
                                 <Text style={{ color: 'black' }}>
                                     목표 설정하기
@@ -498,8 +738,121 @@ const Goals = ({ navigation }) => {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                    </View> :
-                    null
+                    </View>
+                    : (gotogoal ?
+                        <View
+                            style={styles.modalContainer}
+                        >
+                            <View
+                                style={styles.closeContainer}
+
+                            >
+                                <TouchableOpacity
+                                    onPress={() => setGotogoal(prev => !prev)}
+                                >
+                                    <Image
+                                        source={closeIcon}
+                                        style={styles.closeStyle}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ flex: 2 }}>
+                                <View style={styles.notUnderlineContainer}>
+                                    <Text
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: 'bold',
+                                            color: 'black'
+                                        }}
+                                    >
+                                        목표 작성
+                                    </Text>
+                                </View>
+                                <TextInput
+                                    style={styles.whitebox}
+                                    multiline={true}
+                                    placeholder='추가하고 싶은 목록을 작성해주세요...'
+                                    value={goalTextInput}
+                                    onChangeText={event => {
+                                        setGoalTextInput(event)
+                                    }}
+                                />
+                            </View>
+                            <View style={{ flex: 2 }}>
+                                <View style={styles.notUnderlineContainer}>
+                                    <Text
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: 'bold',
+                                            color: 'black'
+                                        }}
+                                    >
+                                        위치 설정
+                                    </Text>
+                                </View>
+                                <Button
+                                    title="위치 설정하러 가기"
+                                    onPress={() => (
+                                        navigation.navigate('Map',
+                                            {
+                                                setArriveLat,
+                                                setArriveLon,
+                                                setStartLat,
+                                                setStartLon,
+                                                setPlaceName
+                                            }
+                                        ),
+                                        console.log(arriveLat, arriveLon, startLat, startLon)
+                                    )}
+                                    style={{ flex: 1 }}
+                                />
+                                <View style={{
+                                    backgroundColor: 'white',
+                                    borderRadius: 20,
+                                    width: '100%',
+                                    marginVertical: 10,
+                                    paddingVertical: 10,
+                                    paddingHorizontal: 20,
+                                    textAlignVertical: "top"
+                                }}>
+                                    {placeName ?
+                                        <Text style={{
+                                            fontSize: 16,
+                                            fontWeight: 'bold'
+                                        }}>
+                                            홍길동님은 {placeName} 위치로 이동하고 싶어합니다.
+                                        </Text> :
+                                        <Text style={{
+                                            fontSize: 16,
+                                            fontWeight: 'bold',
+                                            color: 'tomato'
+                                        }}>
+                                            위치 설정을 해주세요.
+                                        </Text>
+                                    }
+
+                                </View>
+                            </View>
+                            <View style={{ flex: 1, flexDirection: 'row' }}>
+                                <TouchableOpacity
+                                    style={styles.submitNclose}
+                                    onPress={() => setGoal(false)}
+                                >
+                                    <Text style={{ color: 'black' }}>
+                                        목표 설정하기
+                                    </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.submitNclose}>
+                                    <Text style={{ color: 'black' }}>
+                                        닫기
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View> :
+                        null
+                    )
             }
         </View >
     )

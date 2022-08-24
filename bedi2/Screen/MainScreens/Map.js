@@ -19,6 +19,7 @@ function Map({ navigation, route }) {
     const [longitude, setLongitude] = useState(null)
     const [text, setText] = useState('')
     const [textInput, setTextInput] = useState('')
+    const [settingMarker, setSettingMarkers] = useState(false)
     const [markers, setMarkers] = useState([
         {
             coordinate: {
@@ -47,7 +48,6 @@ function Map({ navigation, route }) {
 
     useEffect(() => {
         requestPermission().then(result => {
-            // console.log({ result });
             if (result === "granted") {
                 const watchId = Geolocation.getCurrentPosition(
                     pos => {
@@ -72,11 +72,17 @@ function Map({ navigation, route }) {
     const searchFn = () => {
         setTextInput(text)
         setText('')
+        if (markers.length === 2) {
+            console.log('마커 변수 길이는 ', markers.length)
+            markers.pop()
+            console.log(markers)
+        }
         RNGooglePlaces
             .openAutocompleteModal()
             .then((place) => {
                 console.log(place);
                 console.log('찾는 ', place.name, ' 장소의 경도와 위도 : ', place.location.latitude, place.location.longitude);
+                setSettingMarkers(prev => !prev)
                 setMarkers(prev => [...prev, {
                     coordinate: {
                         latitude: place.location.latitude,
@@ -99,7 +105,7 @@ function Map({ navigation, route }) {
                 onPress={() => searchFn()}
             />
             <TouchableOpacity
-                style={{ width: 100, height: 100, backgroundColor: 'red' }}
+                style={{ borderRadius: 20 }}
                 onPress={
                     route.params.setStartLat(markers[0].coordinate.latitude),
                     route.params.setStartLon(markers[0].coordinate.longitude),
