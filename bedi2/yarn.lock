@@ -1549,13 +1549,6 @@
   "resolved" "https://registry.npmjs.org/@react-native-google-signin/google-signin/-/google-signin-8.0.0.tgz"
   "version" "8.0.0"
 
-"@react-native-seoul/kakao-login@3.0.3":
-  "integrity" "sha512-czQIYsmKC2ao8RQEFHQt5WcURcFlWkusesuQSCUFAyVqnAXvMWdHx1Ozna6CwJPEj1z9QaGyCBX6nUJXNj9oWQ=="
-  "resolved" "https://registry.npmjs.org/@react-native-seoul/kakao-login/-/kakao-login-3.0.3.tgz"
-  "version" "3.0.3"
-  dependencies:
-    "dooboolab-welcome" "^1.2.0"
-
 "@react-native/assets@1.0.0":
   "integrity" "sha512-KrwSpS1tKI70wuKl68DwJZYEvXktDHdZMG0k2AXD/rJVSlB23/X2CB2cutVR0HwNMJIal9HOUOBB2rVfa6UGtQ=="
   "resolved" "https://registry.npmjs.org/@react-native/assets/-/assets-1.0.0.tgz"
@@ -2851,11 +2844,6 @@
   "version" "2.0.1"
   dependencies:
     "webidl-conversions" "^5.0.0"
-
-"dooboolab-welcome@^1.2.0":
-  "integrity" "sha512-2NbMaIIURElxEf/UAoVUFlXrO+7n/FRhLCiQlk4fkbGRh9cJ3/f8VEMPveR9m4Ug2l2Zey+UCXjd6EcBqHJ5bw=="
-  "resolved" "https://registry.npmjs.org/dooboolab-welcome/-/dooboolab-welcome-1.3.2.tgz"
-  "version" "1.3.2"
 
 "ee-first@1.1.1":
   "integrity" "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="
@@ -5966,7 +5954,7 @@
     "react-freeze" "^1.0.0"
     "warn-once" "^0.1.0"
 
-"react-native@*", "react-native@>= 0.64.3", "react-native@0.69.1":
+"react-native@*", "react-native@^0.69.1", "react-native@>= 0.64.3":
   "integrity" "sha512-585NmzSuYUfday8YsfqgreFAZbXRI/kxKsiuaShwGHgkwdtmE5qA7WfGItgxZBOZD6g/Hm1YBUqSwIm07tPa6A=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.69.1.tgz"
   "version" "0.69.1"

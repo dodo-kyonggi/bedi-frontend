@@ -10,12 +10,3 @@ if (settings.hasProperty("newArchEnabled") && settings.newArchEnabled == "true")
     include(":ReactAndroid:hermes-engine")
     project(":ReactAndroid:hermes-engine").projectDir = file('../node_modules/react-native/ReactAndroid/hermes-engine')
 }
-
-dependencyResolutionManagement {    
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)    
-        repositories {        
-            google()        
-            mavenCentral()        
-            maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }    
-    }
-}
