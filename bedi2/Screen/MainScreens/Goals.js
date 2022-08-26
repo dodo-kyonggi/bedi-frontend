@@ -5,7 +5,6 @@ import {
 } from 'react-native'
 import { Calendar } from 'react-native-calendars'
 import { addDays, format, getData, getDate, startOfWeek, parseISO, getWeek } from 'date-fns'
-import moment from 'moment'
 import plusIcon from '../../Icons/additionCircle.png'
 import closeIcon from '../../Icons/close.png'
 import axios from 'axios'
@@ -79,11 +78,11 @@ const Goals = ({ navigation }) => {
         // console.log('아래는 회원가입-------------------')
         // register()
         // console.log('아래는 로그인-------------------')
-        // login()
+        login()
         // console.log('아래는 목표 저장-------------------')
         // saveGoalData()
         // console.log('아래는 목표 불러오기-------------------')
-        getData()
+        // getData()
         //Reaccesstoken()
         // console.log('reTextInput', reTextInput)
         const geoLocation = () => {

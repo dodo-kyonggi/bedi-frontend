@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { View, Text, Image } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from './Screen/MainScreens/Home'
 import 'react-native-gesture-handler';
 import Goals from './Screen/MainScreens/Goals'
 import { NavigationContainer } from "@react-navigation/native";
@@ -10,7 +8,7 @@ import Map from "./Screen/MainScreens/Map";
 import Ranking from "./Screen/Ranking";
 import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
-import CalendarMap from './Screen/MainScreens/CalendarMap'
+import SplashScreen from 'react-native-splash-screen'
 
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
@@ -44,7 +42,11 @@ const TabBarIcon = (focused, name) => {
 }
 
 const App = () => {
-
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide()
+    }, 2000)
+  }, [])
   return (
     <NavigationContainer
       style={{
