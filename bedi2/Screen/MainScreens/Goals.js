@@ -62,7 +62,10 @@ const Goals = ({ navigation }) => {
     const [reTextInput, setReTextInput] = useState([])
     const [optionClickMotion, setOptionClickMotion] = useState(false)
     const [id, setId] = useState(0)
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzcxNDEyODAwIiwiZXhwIjoxNjYxMzM0NjY1LCJpYXQiOjE2NjEzMTMwNjUsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.qhDvGFS5tXutIh93fKD4AnhjI-x6irsZiQSW589v7b4'
+    const [addTodo, setAddTodo] = useState(false)
+    const [modifygoal, setModifygoal] = useState(false)
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzcxNDEyODAwIiwiZXhwIjoxNjYxODY4MTc4LCJpYXQiOjE2NjE4NjYzNzgsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.epL-ktSQE3-dOpPQ5I8MrPTixqslJgoMiZ09MMlb6O8'
+
     let chooseTimeString = ""
     if (chooseTime.month < 10) {
         chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.day}`
@@ -73,6 +76,7 @@ const Goals = ({ navigation }) => {
     }
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
+    console.log(userDatas)
     useEffect(() => {
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
@@ -106,7 +110,7 @@ const Goals = ({ navigation }) => {
         }
         geoLocation()
         console.log(timeString)
-    }, [chooseTime, gotogoal, optionClickMotion])
+    }, [chooseTime, gotogoal, optionClickMotion, modifygoal])
     const register = () => {
         axios.post('http://beingdiligent.tk/user/signup', {
             'username': 'songheeco',
@@ -154,7 +158,7 @@ const Goals = ({ navigation }) => {
             .catch(error => console.log(error.response))
     }
     const saveGoalData = () => {
-        // console.log(goalTextInput, arriveLat, arriveLon, startLat, startLon, chooseTimeString)
+        console.log(goalTextInput, arriveLat, arriveLon, startLat, startLon, chooseTimeString)
         axios.post('http://beingdiligent.tk:8080/goal/create',
             {
                 "date": chooseTimeString,
@@ -180,11 +184,16 @@ const Goals = ({ navigation }) => {
                 setGoalTextInput('')
                 setPlaceName('')
 
-
+                // setAddTodo(false)
             })
             .catch(error => {
                 console.log('목표 저장 [에러]', error.response)
-                Alert.alert(error.response)
+                if (error.response.data) {
+                    Alert.alert(error.response.data.errorMessage)
+                } else {
+                    Alert.alert(error.response)
+                }
+
 
             })
     }
@@ -233,7 +242,7 @@ const Goals = ({ navigation }) => {
     const markedDates = {
         timeString: { selected: true }
     }
-    const onClickDate = (date) => {
+    const onClickDate = (oneString) => {
         console.log('date: ', date.date)
         let d = new Date(date.date)
         setChooseTime({
@@ -303,7 +312,7 @@ const Goals = ({ navigation }) => {
                 console.log('udonPeople ' + responseJson.results[0].formatted_address);
             }).catch((err) => console.log("udonPeople error : " + err));
     }
-    const modifygoal = () => {
+    const modifygoalFn = () => {
         axios.put('http://beingdiligent.tk:8080/goal/update',
             {
                 "goalId": id,
@@ -324,7 +333,7 @@ const Goals = ({ navigation }) => {
         )
             .then(res => {
                 console.log('목표 수정!!', res)
-                setGotogoal(prev => !prev)
+                setModifygoal(prev => !prev)
             })
             .catch(error => {
                 console.log('목표 수정 [에러]', error.response)
@@ -361,14 +370,30 @@ const Goals = ({ navigation }) => {
             }
             )
         } else {
-            if (saved === false) {
-                saveGoalData()
-            } else {
-                modifygoal()
+            // if (saved === false) {
+            //     //저장 데이터가 하나도 없는 경우
+            //     saveGoalData()
+            // } else if (addTodo === true && saved === true) {
+            //     //저장 데이터가 있고, 수정하는게 아니라 데이터를 추가하는 경우
+            //     saveGoalData()
+            // } else if (addTodo === false && saved === true) {
 
+            //     //저장 데이터가 있고, 데이터 수정을 하는 경우
+            //     //addTodo === false && saved === true 인 경우 해당
+            //     modifygoalFn()
+            // } else if (addTodo === false && saved === false) {
+            //     saveGoalData()
+            // }
+
+            if (modifygoal) {
+                modifygoalFn()
+            } else {
+                saveGoalData()
             }
+
         }
     }
+
 
 
     return (
@@ -390,7 +415,20 @@ const Goals = ({ navigation }) => {
                 borderColor: 'black'
             }}>
                 {week.map((weekDay) => {
+                    // const oneString = `${weekDay.date.getFullYear()}-${weekDay.date.getMonth() + 1}-${weekDay.date.getDate()}`
+                    let oneString = ''
+                    let month = ''
+                    let date = ''
+                    if (weekDay.date.getMonth() + 1 < 10 && weekDay.date.getDate() >= 10) {
+                        oneString = `${weekDay.date.getFullYear()}-0${weekDay.date.getMonth() + 1}-${weekDay.date.getDate()}`
 
+                    } else if (weekDay.date.getMonth() + 1 < 10 && weekDay.date.getDate() < 10) {
+                        oneString = `${weekDay.date.getFullYear()}-0${weekDay.date.getMonth() + 1}-0${weekDay.date.getDate()}`
+                    } else if (weekDay.date.getMonth() + 1 >= 10 && weekDay.date.getDate() < 10) {
+                        oneString = `${weekDay.date.getFullYear()}-${weekDay.date.getMonth() + 1}-0${weekDay.date.getDate()}`
+                    } else {
+                        oneString = `${weekDay.date.getFullYear()}-${weekDay.date.getMonth() + 1}-${weekDay.date.getDate()}`
+                    }
                     return (
                         <View
                             key={weekDay.formatted}
@@ -404,21 +442,36 @@ const Goals = ({ navigation }) => {
                                 <Text>{weekDay.formatted}</Text>
                             </View>
                             <TouchableOpacity
-                                onPress={() => onClickDate(weekDay)}
-                                style={weekDay.date.getFullYear() === time.year && weekDay.date.getMonth() === time.month && weekDay.date.getDay() === time.day ?
+                                onPress={() => chooseTimeString = oneString}
+                                style={oneString === timeString ?
                                     {
-                                        backgroundColor: 'tomato'
+                                        backgroundColor: '#83E022',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderRadius: 20,
+                                        width: 35,
+                                        height: 35,
+                                        padding: 5
                                     } :
                                     ((hasModalOpened && weekDay.date.getFullYear() === chooseTime.year && weekDay.date.getMonth() + 1 === chooseTime.month && weekDay.date.getDate() === chooseTime.day) ?
                                         {
                                             backgroundColor: 'yellow',
                                             justifyContent: 'center',
                                             alignItems: 'center',
-                                            borderRadius: 5
+                                            borderRadius: 20,
+                                            width: 35,
+                                            height: 35,
+                                            padding: 5
                                         } :
-                                        (selectStyle.length >= 1 ?
-                                            null :
-                                            null))
+                                        {
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            borderRadius: 5,
+                                            width: 35,
+                                            height: 35,
+                                            padding: 5
+                                        }
+                                    )
                                 }
                             >
                                 <Text>{weekDay.day}</Text>
@@ -459,40 +512,83 @@ const Goals = ({ navigation }) => {
                     />
                 </View>
             </View>
-            <View style={{ backgroundColor: 'white', flex: 3, paddingHorizontal: 10 }}>
+            <View style={{ flex: 3, paddingHorizontal: 10 }}>
                 <View style={{ flex: 1 }}>
                     <View
-                        style={styles.underlineContainer}>
-                        <Text>
-                            미달성된 목표
-                        </Text>
-                    </View>
-                    <ScrollView>
-                        {userDatas ? userDatas.map((item, index) => {
-                            if (item.success === false) {
-                                if (item.date === chooseTimeString) {
-                                    return (
-                                        <View style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                            marginVertical: '1%',
-                                            justifyContent: 'space-between'
-                                        }}
-                                            key={item.id}
-                                        >
-                                            <Text
-                                                style={{ width: '50%' }}>
-                                                {index}. {item.title}
-                                            </Text>
-                                            <View style={{
-                                                flexDirection: 'column',
-                                                justifyContent: 'center',
-                                                alignItems: 'center'
-                                            }}>
-                                                <View style={{
-                                                    flexDirection: 'row',
+                        style={{ backgroundColor: 'white', height: '100%' }}>
+                        <View
+                            style={styles.underlineContainer}
+                        >
+                            <Text style={styles.goalGuidText}>
+                                미달성된 목표
+                            </Text>
+                        </View>
 
+                        <ScrollView>
+                            {userDatas ? userDatas.map((item, index) => {
+                                if (item.success === false) {
+                                    if (item.date === chooseTimeString) {
+                                        return (
+                                            <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                                marginVertical: '1%',
+                                                justifyContent: 'space-between'
+                                            }}
+                                                key={item.id}
+                                            >
+                                                <Text
+                                                    style={{ width: '50%' }}>
+                                                    {index}. {item.title}
+                                                </Text>
+                                                <View style={{
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center'
                                                 }}>
+                                                    <View style={{
+                                                        flexDirection: 'row',
+
+                                                    }}>
+                                                        <TouchableOpacity
+                                                            style={{
+                                                                backgroundColor: '#33CDFF',
+                                                                paddingHorizontal: '5%',
+                                                                borderRadius: 20,
+                                                                paddingVertical: '1%',
+                                                                marginHorizontal: '1%',
+
+                                                            }}
+                                                            onPress={() => {
+                                                                goalAchieve(item.id)
+                                                            }}
+                                                        >
+                                                            <Text>
+                                                                달성하기
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                        <TouchableOpacity
+                                                            style={{
+                                                                backgroundColor: '#79CACC',
+                                                                paddingHorizontal: '5%',
+                                                                borderRadius: 20,
+                                                                paddingVertical: '1%',
+                                                                marginHorizontal: '1%'
+                                                            }}
+                                                            onPress={() => {
+                                                                // setGotogoal(prev => !prev)
+                                                                setModifygoal(prev => !prev)
+                                                                setArriveLat(item.lat)
+                                                                setArriveLon(item.lon)
+                                                                // findAddress()
+                                                                modifyBtn(item.title, item.id)
+                                                            }}
+                                                        >
+                                                            <Text>
+                                                                수정하기
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    </View>
                                                     <TouchableOpacity
                                                         style={{
                                                             backgroundColor: '#33CDFF',
@@ -500,67 +596,38 @@ const Goals = ({ navigation }) => {
                                                             borderRadius: 20,
                                                             paddingVertical: '1%',
                                                             marginHorizontal: '1%',
-
+                                                            width: 73
                                                         }}
                                                         onPress={() => {
-                                                            goalAchieve(item.id)
+                                                            goalDelete(item.id)
                                                         }}
                                                     >
                                                         <Text>
-                                                            달성하기
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                    <TouchableOpacity
-                                                        style={{
-                                                            backgroundColor: '#79CACC',
-                                                            paddingHorizontal: '5%',
-                                                            borderRadius: 20,
-                                                            paddingVertical: '1%',
-                                                            marginHorizontal: '1%'
-                                                        }}
-                                                        onPress={() => {
-                                                            setGotogoal(prev => !prev)
-                                                            setArriveLat(item.lat)
-                                                            setArriveLon(item.lon)
-                                                            findAddress()
-                                                            modifyBtn(item.title, item.id)
-                                                        }}
-                                                    >
-                                                        <Text>
-                                                            수정하기
+                                                            삭제하기
                                                         </Text>
                                                     </TouchableOpacity>
                                                 </View>
-                                                <TouchableOpacity
-                                                    style={{
-                                                        backgroundColor: '#33CDFF',
-                                                        paddingHorizontal: '5%',
-                                                        borderRadius: 20,
-                                                        paddingVertical: '1%',
-                                                        marginHorizontal: '1%',
-                                                        width: 73
-                                                    }}
-                                                    onPress={() => {
-                                                        goalDelete(item.id)
-                                                    }}
-                                                >
-                                                    <Text>
-                                                        삭제하기
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            </View>
 
-                                        </View>
-                                    )
+                                            </View>
+                                        )
+                                    }
                                 }
-                            }
-                        }) : null}
-                    </ScrollView>
+                            }) : null}
+                            {userDatas.filter(item => item.date === chooseTimeString).length === 0 ?
+                                <View>
+                                    <Text>
+                                        아직 설정하신 목표가 없어요😅
+                                    </Text>
+                                </View>
+                                : null}
+                        </ScrollView>
+                    </View>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View
+                    style={{ flex: 1 }}>
                     <View
                         style={styles.underlineContainer}>
-                        <Text>
+                        <Text style={styles.goalGuidText}>
                             달성된 목표
                         </Text>
                     </View>
@@ -584,6 +651,13 @@ const Goals = ({ navigation }) => {
                             }
                         }
                     }) : null}
+                    {userDatas.filter(item => item.date === chooseTimeString && item.success === true).length === 0 ?
+                        <View>
+                            <Text>
+                                달성된 목표가 없어요..😧
+                            </Text>
+                        </View>
+                        : null}
                 </View>
             </View>
 
@@ -601,7 +675,12 @@ const Goals = ({ navigation }) => {
                                 style={styles.closeStyle}
                             />
                         </TouchableOpacity>
-                        <View style={{ justifyContent: 'center', alignItems: 'center', height: '80%' }}>
+                        <View style={{
+                            justifyContent: 'center', alignItems: 'center',
+                            //  height: '80%' ,
+                            width: '100%',
+                            height: '100%'
+                        }}>
                             <Calendar
                                 initialDate={timeString}
                                 minDate={timeString}
@@ -617,7 +696,14 @@ const Goals = ({ navigation }) => {
                                     console.log(day)
                                 }}
                                 markedDates={{
-                                    chooseTimeString: { selected: true, color: 'green' }
+                                    chooseTimeString: { selected: true, color: 'green' },
+
+                                }}
+                                style={{
+                                    width: 400,
+                                    height: 400,
+
+
                                 }}
                             />
                         </View>
@@ -627,7 +713,7 @@ const Goals = ({ navigation }) => {
             }
 
             {
-                gotogoal && userDatas.length ?
+                gotogoal ?
                     <View
                         style={styles.modalContainer}
                     >
@@ -725,21 +811,26 @@ const Goals = ({ navigation }) => {
                         <View style={{ flex: 1, flexDirection: 'row' }}>
                             <TouchableOpacity
                                 style={styles.submitNclose}
-                                onPress={() => setGoal(false)}
+                                onPress={() => {
+                                    setGoal()
+                                    console.log('목표 설정')
+                                }}
                             >
                                 <Text style={{ color: 'black' }}>
                                     목표 설정하기
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={styles.submitNclose}>
+                                style={styles.submitNclose}
+                                onPress={() => setGotogoal(prev => !prev)}
+                            >
                                 <Text style={{ color: 'black' }}>
                                     닫기
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                    </View>
-                    : (gotogoal ?
+                    </View> :
+                    (modifygoal ?
                         <View
                             style={styles.modalContainer}
                         >
@@ -748,7 +839,7 @@ const Goals = ({ navigation }) => {
 
                             >
                                 <TouchableOpacity
-                                    onPress={() => setGotogoal(prev => !prev)}
+                                    onPress={() => setModifygoal(prev => !prev)}
                                 >
                                     <Image
                                         source={closeIcon}
@@ -837,22 +928,30 @@ const Goals = ({ navigation }) => {
                             <View style={{ flex: 1, flexDirection: 'row' }}>
                                 <TouchableOpacity
                                     style={styles.submitNclose}
-                                    onPress={() => setGoal(false)}
+                                    onPress={() => {
+                                        // setAddTodo(false)
+                                        setGoal()
+
+                                        console.log('목표 설정')
+                                    }}
                                 >
                                     <Text style={{ color: 'black' }}>
                                         목표 설정하기
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={styles.submitNclose}>
+                                    style={styles.submitNclose}
+                                    onPress={() => setModifygoal(prev => !prev)}
+                                >
                                     <Text style={{ color: 'black' }}>
                                         닫기
                                     </Text>
                                 </TouchableOpacity>
                             </View>
-                        </View> :
-                        null
-                    )
+                        </View>
+
+                        : null)
+
             }
         </View >
     )
@@ -886,7 +985,12 @@ const styles = StyleSheet.create({
         borderBottomColor: '#aaa',
         marginVertical: 10,
         borderBottomWidth: 1,
-        paddingVertical: 5
+        paddingVertical: 5,
+
+    },
+    goalGuidText: {
+        fontSize: 17,
+        fontWeight: '600'
     },
     whitebox: {
         backgroundColor: 'white',

@@ -70,7 +70,7 @@ const App = () => {
           name="Ranking"
           component={Ranking}
           options={{
-            tabBarLabel: '랭킹'
+            tabBarLabel: '통계'
           }}
         />
         <Tab.Screen
