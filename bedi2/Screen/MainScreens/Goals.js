@@ -64,7 +64,8 @@ const Goals = ({ navigation }) => {
     const [id, setId] = useState(0)
     const [addTodo, setAddTodo] = useState(false)
     const [modifygoal, setModifygoal] = useState(false)
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzcxNDEyODAwIiwiZXhwIjoxNjYxODY4MTc4LCJpYXQiOjE2NjE4NjYzNzgsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.epL-ktSQE3-dOpPQ5I8MrPTixqslJgoMiZ09MMlb6O8'
+    const [dotDatas, setDotDatas] = useState({})
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzcxNDEyODAwIiwiZXhwIjoxNjYxOTM1MTY2LCJpYXQiOjE2NjE5MzMzNjYsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.-c0qe1U6OfEyVuNoAn46795LgUuYTD-Rhc2xrtnq-Hk'
 
     let chooseTimeString = ""
     if (chooseTime.month < 10) {
@@ -76,7 +77,6 @@ const Goals = ({ navigation }) => {
     }
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
-    console.log(userDatas)
     useEffect(() => {
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
@@ -139,6 +139,9 @@ const Goals = ({ navigation }) => {
             .then(res => {
                 console.log(res.data)
                 setUserDatas(res.data)
+                userDatas.sort(function (a, b) {
+                    return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
+                })
 
             })
             .catch(error => console.log(error.response))
@@ -222,8 +225,9 @@ const Goals = ({ navigation }) => {
             })
             .catch(error => {
                 console.log('목표 저장 [에러]', error.response)
-                Alert.alert(error.response.data.errorMessage)
-
+                if (error.response.status === 400) {
+                    Alert.alert(error.response.data.errorMessage)
+                }
             })
     }
 
@@ -239,9 +243,6 @@ const Goals = ({ navigation }) => {
         }
     }
 
-    const markedDates = {
-        timeString: { selected: true }
-    }
     const onClickDate = (oneString) => {
         console.log('date: ', date.date)
         let d = new Date(date.date)
@@ -332,12 +333,15 @@ const Goals = ({ navigation }) => {
 
         )
             .then(res => {
-                console.log('목표 수정!!', res)
                 setModifygoal(prev => !prev)
+                Alert.alert('목표가 수정되었어요!!')
+
             })
             .catch(error => {
                 console.log('목표 수정 [에러]', error.response)
-                Alert.alert(error.response.data.errorMessage)
+                if (error.response.status === 400) {
+                    Alert.alert(error.response.data.errorMessage)
+                }
 
             })
 
@@ -354,7 +358,12 @@ const Goals = ({ navigation }) => {
                 console.log(res.data)
                 setOptionClickMotion(prev => !prev)
             })
-            .catch(error => console.log(error.response))
+            .catch(error => {
+                console.log(error.response)
+                if (error.response.status === 400) {
+                    Alert.alert(error.response.data.errorMessage)
+                }
+            })
     }
 
     const setGoal = (saved) => {
@@ -370,20 +379,6 @@ const Goals = ({ navigation }) => {
             }
             )
         } else {
-            // if (saved === false) {
-            //     //저장 데이터가 하나도 없는 경우
-            //     saveGoalData()
-            // } else if (addTodo === true && saved === true) {
-            //     //저장 데이터가 있고, 수정하는게 아니라 데이터를 추가하는 경우
-            //     saveGoalData()
-            // } else if (addTodo === false && saved === true) {
-
-            //     //저장 데이터가 있고, 데이터 수정을 하는 경우
-            //     //addTodo === false && saved === true 인 경우 해당
-            //     modifygoalFn()
-            // } else if (addTodo === false && saved === false) {
-            //     saveGoalData()
-            // }
 
             if (modifygoal) {
                 modifygoalFn()
@@ -405,6 +400,32 @@ const Goals = ({ navigation }) => {
                 justifyContent: 'space-around',
                 flexDirection: 'column'
             }}>
+            <View style={{ flexDirection: 'row', padding: 10 }}>
+                <View style={{ flexDirection: 'row', paddingHorizontal: 5 }}>
+                    <View style={{
+                        backgroundColor: '#83E022',
+                        width: 20, height: 20,
+                        borderRadius: 20,
+                        marginRight: 10
+                    }}>
+                    </View>
+                    <Text>
+                        : 오늘 날짜
+                    </Text>
+                </View>
+                <View style={{ flexDirection: 'row', paddingHorizontal: 5 }}>
+                    <View style={{
+                        backgroundColor: 'yellow',
+                        width: 20, height: 20,
+                        borderRadius: 20,
+                        marginRight: 10
+                    }}>
+                    </View>
+                    <Text>
+                        : 선택한 날짜
+                    </Text>
+                </View>
+            </View>
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-around',
@@ -517,15 +538,24 @@ const Goals = ({ navigation }) => {
                     <View
                         style={{ backgroundColor: 'white', height: '100%' }}>
                         <View
-                            style={styles.underlineContainer}
+                            style={userDatas.filter(item => item.date === chooseTimeString).length > 2 ?
+                                styles.toomuchUnderlineContainer : styles.underlineContainer}
                         >
+
                             <Text style={styles.goalGuidText}>
                                 미달성된 목표
                             </Text>
+                            {userDatas.filter(item => item.date === chooseTimeString).length > 2
+                                ?
+                                <Text style={{ fontSize: 10 }}>
+                                    아래로 스크롤하면 다른 목표도 확인할 수 있어요!
+                                </Text> : null
+                            }
                         </View>
 
                         <ScrollView>
                             {userDatas ? userDatas.map((item, index) => {
+
                                 if (item.success === false) {
                                     if (item.date === chooseTimeString) {
                                         return (
@@ -539,7 +569,7 @@ const Goals = ({ navigation }) => {
                                             >
                                                 <Text
                                                     style={{ width: '50%' }}>
-                                                    {index}. {item.title}
+                                                    {index + 1}. {item.title}
                                                 </Text>
                                                 <View style={{
                                                     flexDirection: 'column',
@@ -683,7 +713,7 @@ const Goals = ({ navigation }) => {
                         }}>
                             <Calendar
                                 initialDate={timeString}
-                                minDate={timeString}
+                                // minDate={timeString}
                                 maxDate={maxTimeString}
                                 theme={{
                                     arrowColor: '#F2CB05',
@@ -985,12 +1015,21 @@ const styles = StyleSheet.create({
         borderBottomColor: '#aaa',
         marginVertical: 10,
         borderBottomWidth: 1,
+        paddingVertical: 5
+    },
+    toomuchUnderlineContainer: {
+        width: '100%',
+        marginVertical: 10,
+        borderBottomWidth: 1,
         paddingVertical: 5,
-
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center'
     },
     goalGuidText: {
         fontSize: 17,
-        fontWeight: '600'
+        fontWeight: '600',
+        color: 'black'
     },
     whitebox: {
         backgroundColor: 'white',

@@ -18,21 +18,25 @@ const MainStack = createStackNavigator();
 const MainStackComponent = () => {
   return (
     <MainStack.Navigator>
-      {/* <MainStack.Screen name="Home" component={Home} /> */}
       <MainStack.Screen name="Main" component={Goals} />
       <MainStack.Screen name="Map" component={Map} />
-      {/* <MainStack.Screen name="CalendarMap" component={CalendarMap} /> */}
     </MainStack.Navigator>
   );
 }
 
 const TabBarIcon = (focused, name) => {
   let iconImagePath;
-  if (name === 'MainScreen') {
+  if (name === 'MainScreen' && focused === true) {
+    iconImagePath = require('./Icons/homeFill.png')
+  } else if (name === 'Ranking' && focused === true) {
+    iconImagePath = require('./Icons/rankingFill.png')
+  } else if (name === 'Mypage' && focused === true) {
+    iconImagePath = require('./Icons/mypageFill.png')
+  } else if (name === 'MainScreen' && focused === false) {
     iconImagePath = require('./Icons/home.png')
-  } else if (name === 'Ranking') {
+  } else if (name === 'Ranking' && focused === false) {
     iconImagePath = require('./Icons/ranking.png')
-  } else if (name === 'Mypage') {
+  } else if (name === 'Mypage' && focused === false) {
     iconImagePath = require('./Icons/mypage.png')
   }
   return (
@@ -63,21 +67,27 @@ const App = () => {
           component={MainStackComponent}
           options={{
             headerShown: false,
-            tabBarLabel: '홈'
+            tabBarLabel: '홈',
+            tabBarActiveTintColor: 'black',
+            tabBarInactiveTintColor: 'grey'
           }}
         />
         <Tab.Screen
           name="Ranking"
           component={Ranking}
           options={{
-            tabBarLabel: '통계'
+            tabBarLabel: '통계',
+            tabBarActiveTintColor: 'black',
+            tabBarInactiveTintColor: 'grey'
           }}
         />
         <Tab.Screen
           name="Mypage"
           component={Mypage}
           options={{
-            tabBarLabel: '마이페이지'
+            tabBarLabel: '마이페이지',
+            tabBarActiveTintColor: 'black',
+            tabBarInactiveTintColor: 'grey'
           }}
         />
       </Tab.Navigator>
