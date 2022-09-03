@@ -3,7 +3,21 @@ import { View, Text } from 'react-native'
 const Mypage = () => {
     return (
         <View>
-            <Text>Mypage Screen</Text>
+            <Image
+            >
+                <View>
+                    <View>
+                        <View></View>
+                        <View></View>
+                    </View>
+                </View>
+                <View>
+                    <View></View>
+                </View>
+                <View>
+                    <View></View>
+                </View>
+            </Image>
         </View>
     )
 }

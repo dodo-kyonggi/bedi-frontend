@@ -33,9 +33,11 @@ const Goals = ({ navigation }) => {
         date: clickDate.getDate()
     }
     let timeString = ''
-    if (time.month < 10) {
+    if (time.month < 10 && time.date < 10) {
+        timeString = `${time.year}-0${time.month}-0${time.date}`
+    } else if (time.month < 10 && time.date >= 10) {
         timeString = `${time.year}-0${time.month}-${time.date}`
-    } else if (time.date < 10) {
+    } else if (time.month >= 10 && time.date < 10) {
         timeString = `${time.year}-${time.month}-0${time.date}`
     } else {
         timeString = `${time.year}-${time.month}-${time.date}`
@@ -65,15 +67,17 @@ const Goals = ({ navigation }) => {
     const [addTodo, setAddTodo] = useState(false)
     const [modifygoal, setModifygoal] = useState(false)
     const [dotDatas, setDotDatas] = useState({})
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzcxNDEyODAwIiwiZXhwIjoxNjYxOTM1MTY2LCJpYXQiOjE2NjE5MzMzNjYsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.-c0qe1U6OfEyVuNoAn46795LgUuYTD-Rhc2xrtnq-Hk'
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyMDIxNDU2LCJpYXQiOjE2NjIwMTk2NTYsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.4nb4Z97348ivq7oFyJFu0k29DJaA45m5HXgRqag-x20'
 
     let chooseTimeString = ""
-    if (chooseTime.month < 10) {
-        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.day}`
-    } else if (chooseTime.date < 10) {
+    if (chooseTime.month < 10 && chooseTime.date < 10) {
+        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-0${chooseTime.day}`
+    } else if (chooseTime.month >= 10 && chooseTime.date < 10) {
         chooseTimeString = `${chooseTime.year}-${chooseTime.month}-0${chooseTime.day}`
+    } else if (chooseTime.month < 10 && chooseTime.date >= 10) {
+        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.day}`
     } else {
-        chooseTimeString = `${chooseTime.year}-${chooseTime.month}-${chooseTime.day}`
+        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-0${chooseTime.day}`
     }
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
@@ -110,6 +114,7 @@ const Goals = ({ navigation }) => {
         }
         geoLocation()
         console.log(timeString)
+        console.log('chooseTimeString: ', chooseTimeString)
     }, [chooseTime, gotogoal, optionClickMotion, modifygoal])
     const register = () => {
         axios.post('http://beingdiligent.tk/user/signup', {
@@ -124,7 +129,7 @@ const Goals = ({ navigation }) => {
     const login = () => {
         axios.post('http://beingdiligent.tk/user/login', {
             'password': 'thd02026',
-            'email': 'songheeco@yahoo.com',
+            'email': 'songheeco@yahoo.com'
         })
             .then(res => console.log(res))
             .catch(e => console.log(e.response))
