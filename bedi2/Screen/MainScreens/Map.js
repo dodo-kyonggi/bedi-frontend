@@ -34,7 +34,7 @@ function Map({ navigation, route }) {
             id: 1
         }
     ])
-    console.log(markers)
+    // console.log(markers)
     async function requestPermission() {
         try {
             if (Platform.OS === "android") {
@@ -98,7 +98,7 @@ function Map({ navigation, route }) {
             })
             .catch(error => console.log(error.message));
     }
-
+    console.log(route.params)
     return (
         <View style={{
             flex: 1,
@@ -179,7 +179,7 @@ function Map({ navigation, route }) {
                         paddingTop: 10
                     }}>
                         <TouchableOpacity
-                            onPress={
+                            onPress={() =>
                                 route.params.setStartLat(markers[0].coordinate.latitude),
                                 route.params.setStartLon(markers[0].coordinate.longitude),
                                 markers[1] ? route.params.setArriveLat(markers[1].coordinate.latitude.toFixed(6)) : null,
