@@ -71,7 +71,7 @@ const Goals = ({ navigation }) => {
     const [addTodo, setAddTodo] = useState(false)
     const [modifygoal, setModifygoal] = useState(false)
     const [dotDatas, setDotDatas] = useState({})
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyMjk4MDI1LCJpYXQiOjE2NjIyOTYyMjUsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.9K-bHPGgn_Lk3CnMP9d_ER87xXaX9DXTW9N4Lyde-NE'
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyMzU0NTc2LCJpYXQiOjE2NjIzNTI3NzYsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.wdysnbRbnpVKpWhOkp4zdM5EE9vZT5O-baHsb_IZfJQ'
 
     const StatusBarHeight = StatusBar.currentHeight
     let chooseTimeString = ""
@@ -97,7 +97,8 @@ const Goals = ({ navigation }) => {
         // console.log('아래는 목표 저장-------------------')
         // saveGoalData()
         // console.log('아래는 목표 불러오기-------------------')
-        // getData()
+        getData()
+        console.log('userDatas : ', userDatas)
         //Reaccesstoken()
         // console.log('reTextInput', reTextInput)
         const geoLocation = () => {

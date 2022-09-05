@@ -54,6 +54,8 @@ const Goal = (props) => {
                 }
             })
     }
+
+    console.log('props.userDatas: ', props.userDatas)
     return (
         <View style={{ flex: 3, paddingHorizontal: 10 }}>
             <View style={{ flex: 1 }}>
