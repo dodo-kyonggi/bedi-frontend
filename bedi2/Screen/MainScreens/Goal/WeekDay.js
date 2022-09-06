@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity } from "react-native"
 import React, { useEffect } from "react";
 const WeekDay = (props) => {
     const onClickDate = (oneString) => {
-        console.log('date: ', oneString.date)
         let d = new Date(oneString.date)
         props.setChooseTime({
             year: d.getFullYear(),

@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 const CalendarModal = (props) => {
     let chooseTimeString = props.chooseTimeString
     const onClickCalendarModal = (day) => {
-        console.log('모달창에서 사용자가 누른 날짜: ', day)
         props.setChooseTime({
             year: day.year,
             month: day.month,
@@ -14,7 +13,6 @@ const CalendarModal = (props) => {
         props.setIsModal(prev => !prev)
         props.setHasModalOpened(true)
         if (props.timeString !== props.chooseTimeString) {
-            console.log('사용자가 누른 날짜는 오늘과 다른 날짜임!!')
         }
     }
 
@@ -50,7 +48,6 @@ const CalendarModal = (props) => {
                         }}
                         onDayPress={day => {
                             onClickCalendarModal(day)
-                            console.log(day)
                         }}
                         markedDates={{
                             chooseTimeString: { selected: true, color: 'green' }

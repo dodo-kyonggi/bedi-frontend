@@ -34,7 +34,6 @@ function Map({ navigation, route }) {
             id: 1
         }
     ])
-    // console.log(markers)
     async function requestPermission() {
         try {
             if (Platform.OS === "android") {
@@ -59,8 +58,6 @@ function Map({ navigation, route }) {
                         console.log(error)
                     }
                 )
-                console.log('LocationScreen')
-
             }
         })
     }
@@ -74,15 +71,11 @@ function Map({ navigation, route }) {
         setTextInput(text)
         setText('')
         if (markers.length > 2) {
-            console.log('마커 변수 길이는 ', markers.length)
             setMarkers(prev => prev.filter(item => item.id === 1))
-            console.log(markers)
         }
         RNGooglePlaces
             .openAutocompleteModal()
             .then((place) => {
-                console.log(place);
-                console.log('찾는 ', place.name, ' 장소의 경도와 위도 : ', place.location.latitude, place.location.longitude);
                 setSettingMarkers(prev => !prev)
                 setMarkers(prev => [...prev, {
                     coordinate: {
@@ -98,7 +91,6 @@ function Map({ navigation, route }) {
             })
             .catch(error => console.log(error.message));
     }
-    console.log(route.params)
     return (
         <View style={{
             flex: 1,

@@ -6,7 +6,6 @@ import close from '../Icons/close.png'
 const Mypage = () => {
     const [plusClk, setPlusClk] = useState(false)
     useEffect(() => {
-        console.log(plusClk)
     }, [plusClk])
     return (
         <View>

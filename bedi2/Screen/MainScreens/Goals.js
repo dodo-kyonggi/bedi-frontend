@@ -89,18 +89,11 @@ const Goals = ({ navigation }) => {
     useEffect(() => {
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
-        console.log(StatusBarHeight)
-        // console.log('아래는 회원가입-------------------')
         // register()
-        // console.log('아래는 로그인-------------------')
         // login()
-        // console.log('아래는 목표 저장-------------------')
         // saveGoalData()
-        // console.log('아래는 목표 불러오기-------------------')
-        getData()
-        console.log('userDatas : ', userDatas)
+        // getData()
         //Reaccesstoken()
-        // console.log('reTextInput', reTextInput)
         const geoLocation = () => {
             Geolocation.getCurrentPosition(
                 position => {
@@ -120,8 +113,6 @@ const Goals = ({ navigation }) => {
             setGoalTextInput('')
         }
         geoLocation()
-        console.log(timeString)
-        console.log('chooseTimeString: ', chooseTimeString)
     }, [chooseTime, gotogoal, optionClickMotion, modifygoal])
     const register = () => {
         axios.post('http://beingdiligent.tk/user/signup', {
@@ -149,7 +140,6 @@ const Goals = ({ navigation }) => {
                 }
             })
             .then(res => {
-                console.log(res.data)
                 setUserDatas(res.data)
                 userDatas.sort(function (a, b) {
                     return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
@@ -167,13 +157,11 @@ const Goals = ({ navigation }) => {
                 }
             })
             .then(res => {
-                console.log(res.data)
                 setUserDatas(res.data)
             })
             .catch(error => console.log(error.response))
     }
     const saveGoalData = () => {
-        console.log(goalTextInput, arriveLat, arriveLon, startLat, startLon, chooseTimeString)
         axios.post('http://beingdiligent.tk:8080/goal/create',
             {
                 "date": chooseTimeString,
@@ -192,7 +180,6 @@ const Goals = ({ navigation }) => {
 
         )
             .then(res => {
-                console.log('목표 저장 [성공]', res)
                 setGotogoal(prev => !prev)
                 setUserDatas([...userDatas, res.data])
 
@@ -202,7 +189,6 @@ const Goals = ({ navigation }) => {
                 // setAddTodo(false)
             })
             .catch(error => {
-                console.log('목표 저장 [에러]', error.response)
                 if (error.response.data) {
                     Alert.alert(error.response.data.errorMessage)
                 } else {
@@ -229,7 +215,6 @@ const Goals = ({ navigation }) => {
     }
 
     const locationValueFunction = (name, data) => {
-        console.log('부모 컴포넌트에서 수행')
         if (name === 'startLat') {
             setStartLat(data)
         } else if (name === 'startLon') {
@@ -266,7 +251,6 @@ const Goals = ({ navigation }) => {
             `https://maps.googleapis.com/maps/api/geocode/json?address=${arriveLat},${arriveLon}&language=ko&key=AIzaSyAKE8BOliJLqw7UzOP1Ub3SIcl1EliTfkc`,
         ).then((response) => response.json())
             .then((responseJson) => {
-                console.log('udonPeople ' + responseJson.results[0].formatted_address);
             }).catch((err) => console.log("udonPeople error : " + err));
     }
     const modifygoalFn = () => {
@@ -294,7 +278,6 @@ const Goals = ({ navigation }) => {
 
             })
             .catch(error => {
-                console.log('목표 수정 [에러]', error.response)
                 if (error.response.status === 400) {
                     Alert.alert(error.response.data.errorMessage)
                 }
@@ -540,7 +523,6 @@ const Goals = ({ navigation }) => {
                                 style={styles.submitNclose}
                                 onPress={() => {
                                     setGoal()
-                                    console.log('목표 설정')
                                 }}
                             >
                                 <Text style={{ color: 'black' }}>

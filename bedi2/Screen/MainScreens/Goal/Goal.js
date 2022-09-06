@@ -19,12 +19,10 @@ const Goal = (props) => {
 
         )
             .then(res => {
-                console.log('목표 성취!!', res)
                 props.userDatas.filter((element) => element.id !== goalId)
                 props.userAchievedDatas(res.data)
             })
             .catch(error => {
-                console.log('목표 저장 [에러]', error.response)
                 if (error.response.status === 400) {
                     Alert.alert(error.response.data.errorMessage)
                 }
@@ -44,18 +42,14 @@ const Goal = (props) => {
                 }
             })
             .then(res => {
-                console.log(res.data)
                 props.setOptionClickMotion(prev => !prev)
             })
             .catch(error => {
-                console.log(error.response)
                 if (error.response.status === 400) {
                     Alert.alert(error.response.data.errorMessage)
                 }
             })
     }
-
-    console.log('props.userDatas: ', props.userDatas)
     return (
         <View style={{ flex: 3, paddingHorizontal: 10 }}>
             <View style={{ flex: 1 }}>
