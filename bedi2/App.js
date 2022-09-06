@@ -10,7 +10,6 @@ import Map from "./Screen/MainScreens/Map";
 import Ranking from "./Screen/Ranking";
 import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
-import CalendarMap from './Screen/MainScreens/CalendarMap'
 
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();

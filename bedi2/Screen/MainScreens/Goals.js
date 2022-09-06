@@ -71,7 +71,7 @@ const Goals = ({ navigation }) => {
     const [addTodo, setAddTodo] = useState(false)
     const [modifygoal, setModifygoal] = useState(false)
     const [dotDatas, setDotDatas] = useState({})
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyMzU0NTc2LCJpYXQiOjE2NjIzNTI3NzYsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.wdysnbRbnpVKpWhOkp4zdM5EE9vZT5O-baHsb_IZfJQ'
+    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyNDY4MzQ4LCJpYXQiOjE2NjI0NDY3NDgsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.KMRqcf720iH71d1hl7OKXqJFKskDxic3dVvGFTaduvo'
 
     const StatusBarHeight = StatusBar.currentHeight
     let chooseTimeString = ""
@@ -286,7 +286,7 @@ const Goals = ({ navigation }) => {
 
     }
 
-    const setGoal = (saved) => {
+    const setGoal = () => {
         if (placeName === '' || goalTextInput === '') {
             Alert.alert(
                 '!잠깐만요!',
