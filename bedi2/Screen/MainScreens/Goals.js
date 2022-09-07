@@ -1,35 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import {
-    View, Text, Button, TouchableOpacity, TextInput, Dimensions, Image, StyleSheet, Alert,
-    KeyboardAvoidingView,
-    Platform
+    View, Text, Button, TouchableOpacity, TextInput, Image, StyleSheet, Alert, Platform
 } from 'react-native'
-import { Calendar } from 'react-native-calendars'
-import { addDays, format, getData, getDate, startOfWeek, parseISO, getWeek, maxTime } from 'date-fns'
-import moment from 'moment'
-import plusIcon from '../../Icons/additionCircle.png'
+import {
+    addDays, format, getDate, startOfWeek
+} from 'date-fns'
 import closeIcon from '../../Icons/close.png'
 import axios from 'axios'
-import { loadPartialConfigAsync } from '@babel/core'
 import { PermissionsAndroid, StatusBar } from 'react-native'
 import Geolocation from "react-native-geolocation-service";
-import { ScrollView } from 'react-native-gesture-handler'
 import WeekDay from './Goal/WeekDay'
 import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
-const SCREEN_WIDTH = Dimensions.get('screen').width
-const SCREEN_HEIGHT = Dimensions.get('screen').height
 
 const Goals = ({ navigation }) => {
     let clickDate = new Date()
-    const [selects, setSelects] = useState({})
-    const [selectStyle, setSelectStyle] = useState({
-        backgroundColor: ''
-    })
-    const [modal, setModal] = ([
-        { gotogoal: false },
-        { gotocaln: false }
-    ])
     const [gotogoal, setGotogoal] = useState(false)
     let time = {
         year: clickDate.getFullYear(),
@@ -47,7 +32,6 @@ const Goals = ({ navigation }) => {
         timeString = `${time.year}-${time.month}-${time.date}`
     }
     let maxTimeString = `${time.year}-12-31`
-    const [items, setItems] = useState([{}]);
     const [week, setWeek] = useState([])
     const [isModal, setIsModal] = useState(false)
     const [hasModalOpened, setHasModalOpened] = useState(false)
@@ -65,16 +49,12 @@ const Goals = ({ navigation }) => {
     const [userDatas, setUserDatas] = useState([])
     const [userAchievedDatas, setUserAchievedDatas] = useState([])
     const [currentPosition, setCurrentPosition] = useState({})
-    const [reTextInput, setReTextInput] = useState([])
     const [optionClickMotion, setOptionClickMotion] = useState(false)
     const [id, setId] = useState(0)
-    const [addTodo, setAddTodo] = useState(false)
     const [modifygoal, setModifygoal] = useState(false)
-    const [dotDatas, setDotDatas] = useState({})
     const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyNDY4MzQ4LCJpYXQiOjE2NjI0NDY3NDgsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.KMRqcf720iH71d1hl7OKXqJFKskDxic3dVvGFTaduvo'
-
-    const StatusBarHeight = StatusBar.currentHeight
     let chooseTimeString = ""
+
     if (chooseTime.month < 10 && chooseTime.date < 10) {
         chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-0${chooseTime.day}`
     } else if (chooseTime.month >= 10 && chooseTime.date < 10) {
@@ -89,11 +69,6 @@ const Goals = ({ navigation }) => {
     useEffect(() => {
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
-        // register()
-        // login()
-        // saveGoalData()
-        // getData()
-        //Reaccesstoken()
         const geoLocation = () => {
             Geolocation.getCurrentPosition(
                 position => {
@@ -114,53 +89,7 @@ const Goals = ({ navigation }) => {
         }
         geoLocation()
     }, [chooseTime, gotogoal, optionClickMotion, modifygoal])
-    const register = () => {
-        axios.post('http://beingdiligent.tk/user/signup', {
-            'username': 'songheeco',
-            'password': 'thd02026',
-            'email': 'songheeco@yahoo.com',
-            'phone': '010-7461-1111'
-        })
-            .then(res => console.log(res))
-            .catch(e => console.log(e.response))
-    }
-    const login = () => {
-        axios.post('http://beingdiligent.tk/user/login', {
-            'password': 'thd02026',
-            'email': 'songheeco@yahoo.com'
-        })
-            .then(res => console.log(res))
-            .catch(e => console.log(e.response))
-    }
-    const getData = () => {
-        axios.get(`http://beingdiligent.tk:8080/goal/show?date=${chooseTimeString}`,
-            {
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`,
-                }
-            })
-            .then(res => {
-                setUserDatas(res.data)
-                userDatas.sort(function (a, b) {
-                    return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
-                })
 
-            })
-            .catch(error => console.log(error.response))
-    }
-
-    const Reaccesstoken = () => {
-        axios.get('http://beingdiligent.tk/user/refresh',
-            {
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`,
-                }
-            })
-            .then(res => {
-                setUserDatas(res.data)
-            })
-            .catch(error => console.log(error.response))
-    }
     const saveGoalData = () => {
         axios.post('http://beingdiligent.tk:8080/goal/create',
             {
@@ -246,13 +175,6 @@ const Goals = ({ navigation }) => {
         return final
     }
 
-    const findAddress = () => {
-        const response = fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${arriveLat},${arriveLon}&language=ko&key=AIzaSyAKE8BOliJLqw7UzOP1Ub3SIcl1EliTfkc`,
-        ).then((response) => response.json())
-            .then((responseJson) => {
-            }).catch((err) => console.log("udonPeople error : " + err));
-    }
     const modifygoalFn = () => {
         axios.put('http://beingdiligent.tk:8080/goal/update',
             {

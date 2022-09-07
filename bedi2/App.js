@@ -1,8 +1,6 @@
-import React, { useEffect } from "react";
-import { View, Text, Image } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import React, { useEffect, useState } from "react";
+import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from './Screen/MainScreens/Home'
 import 'react-native-gesture-handler';
 import Goals from './Screen/MainScreens/Goals'
 import { NavigationContainer } from "@react-navigation/native";
@@ -10,7 +8,9 @@ import Map from "./Screen/MainScreens/Map";
 import Ranking from "./Screen/Ranking";
 import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
+import CheckFirstLaunch from './Launch/CheckFirstLaunch'
 
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyNDY4MzQ4LCJpYXQiOjE2NjI0NDY3NDgsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.KMRqcf720iH71d1hl7OKXqJFKskDxic3dVvGFTaduvo'
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 
@@ -47,6 +47,21 @@ const TabBarIcon = (focused, name) => {
 }
 
 const App = () => {
+  const [isFirstLaunch, setIsFirstLaunch] = useState(false)
+  const [settingNecessary, setSettingNecessary] = useState(1)
+  useEffect(() => {
+    chkFunction()
+  }, [])
+
+  const chkFunction = async () => {
+    const isFirstLaunch = await CheckFirstLaunch()
+    if (isFirstLaunch) {
+      console.log('[App()]:This is the first Launch! ')
+      setIsFirstLaunch(true)
+    } else {
+      setSettingNecessary(0)
+    }
+  }
 
   return (
     <NavigationContainer
@@ -88,6 +103,7 @@ const App = () => {
             tabBarActiveTintColor: 'black',
             tabBarInactiveTintColor: 'grey'
           }}
+          settingNecessary={settingNecessary}
         />
       </Tab.Navigator>
     </NavigationContainer>
