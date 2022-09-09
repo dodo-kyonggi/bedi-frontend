@@ -12,6 +12,7 @@ import Geolocation from "react-native-geolocation-service";
 import WeekDay from './Goal/WeekDay'
 import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
+import TextBtn from './Goal/TextBtn'
 
 const Goals = ({ navigation }) => {
     let clickDate = new Date()
@@ -273,42 +274,14 @@ const Goals = ({ navigation }) => {
                 hasModalOpened={hasModalOpened}
                 chooseTime={chooseTime}
             />
-            <View
-                style={{ alignItems: 'center', flex: 2 }}
-            >
-                <View style={{ paddingVertical: 10 }}>
-                    <Text>
-                        홍길동님, 오늘 달성하고 싶은 것은 무엇인가요? {"\n"}
-                        추가버튼을 눌러 하나씩 추가해주세요!
-                    </Text>
-                </View>
-                <View
-                    style={{ width: '90%', paddingVertical: 10 }}
-                >
-                    <Button
-                        title='월별 날짜 보러가기'
-                        onPress={() => setIsModal(prev => !prev)}
-                        color='#FBA928'
-                    />
-                </View>
-                <View
-                    style={{ width: '90%', paddingVertical: 10 }}
-                >
-                    <Button
-                        title='목표 설정하러 가기'
-                        onPress={() => {
-                            setGotogoal(prev => !prev)
-                            setGoalTextInput('')
-                            setPlaceName('')
-                        }}
-                        color='#fbc328'
-                    />
-                </View>
-            </View>
+            <TextBtn
+                setIsModal={setIsModal}
+                setGotogoal={setGotogoal}
+                setPlaceName={setPlaceName}
+            />
             <Goal
                 userDatas={userDatas}
                 chooseTimeString={chooseTimeString}
-                modifygoal={modifygoal}
                 modifygoal={modifygoal}
                 setModifygoal={setModifygoal}
                 arriveLat={arriveLat}

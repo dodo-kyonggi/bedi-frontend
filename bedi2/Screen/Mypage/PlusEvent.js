@@ -41,13 +41,27 @@ const PlusEvent = () => {
                                 right: 10
                             }}
                         >
-                            <Image
-                                source={close}
-                                style={{
-                                    height: 30,
-                                    width: 30
-                                }}
-                            />
+                            <View style={{
+                                borderRadius: 30,
+                                shadowColor: "#000",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+                                elevation: 5,
+                                height: '100%',
+                                backgroundColor: 'white'
+                            }}>
+                                <Image
+                                    source={close}
+                                    style={{
+                                        height: 30,
+                                        width: 30
+                                    }}
+                                />
+                            </View>
                         </TouchableOpacity> :
                         null}
                     <TouchableOpacity
