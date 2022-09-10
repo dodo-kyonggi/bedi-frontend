@@ -1,6 +1,11 @@
 import React from 'react'
 import { View, Text, Image } from 'react-native'
-const Character = () => {
+const Character = (props) => {
+    const img = props.img ?
+        (props.img === 'egg.jpg' ? require('../../Images/character/egg.jpg') :
+            (props.img === 'chick.jpg' ? require('../../Images/character/chick.jpg') :
+                require('../../Images/character/chicken.jpg'))) : null
+
     return (
         <View style={{
             flex: 4,
@@ -8,8 +13,9 @@ const Character = () => {
             justifyContent: 'flex-end',
             alignItems: 'center'
         }}>
+
             <Image
-                source={require('../../Images/character/egg.png')}
+                source={img}
                 style={{
                     height: '50%',
                     width: '50%'

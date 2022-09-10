@@ -5,9 +5,11 @@ import Character from './Mypage/Character'
 import PlusEvent from './Mypage/PlusEvent'
 import * as users from './MainScreens/Functions/Users'
 import * as mypageUsers from './Mypage/Function/Users'
+import Loading from './Loading'
 
 const Mypage = (props) => {
     let [charac, setCharac] = useState()
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         // users.Login()
@@ -18,6 +20,7 @@ const Mypage = (props) => {
         mypageUsers.ongoingCharac()
             .then(res => {
                 setCharac(res)
+                setLoading(false)
             })
     }, [])
 
@@ -45,7 +48,12 @@ const Mypage = (props) => {
                         point={0}
                     />}
 
-                <Character />
+                {loading ?
+                    <Loading />
+                    :
+                    <Character
+                        img={charac?.character.img}
+                    />}
                 <PlusEvent />
             </ImageBackground >
         </View >

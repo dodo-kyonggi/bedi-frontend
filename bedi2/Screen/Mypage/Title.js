@@ -2,7 +2,12 @@ import React, { useEffect } from 'react'
 import { View, Text } from 'react-native'
 
 const Title = (props) => {
-    let score = 40 / 80 * 100
+    let score
+    if (props.point !== 0) {
+        score = props.point / 80 * 100
+    } else {
+        score = props.point
+    }
     return (
         <View style={{
             flex: 3,
@@ -21,7 +26,7 @@ const Title = (props) => {
                     <Text style={{
                         color: 'black'
                     }}>
-                        Lv{props.lvNum}.{props.name}
+                        Lv {props.lvNum}.{props.name}
                     </Text>
                 </View>
                 <View style={{
