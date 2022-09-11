@@ -9,8 +9,9 @@ import Ranking from "./Screen/Ranking";
 import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
 import CheckFirstLaunch from './Launch/CheckFirstLaunch'
+import * as users from './Screen/MainScreens/Functions/Users'
 
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyODUzODI2LCJpYXQiOjE2NjI4NTIwMjYsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.YOa-gWzxNwCV-bfQzIyhKrCBGVm6dKcTPUlw3WwkuJg'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyODg3MjAxLCJpYXQiOjE2NjI4ODU0MDEsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.8cR8NrlKf-ZUFgfemioBKq6eDJcIsjkJ4BR3rJ60_ng'
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 
@@ -51,6 +52,7 @@ const App = () => {
   const [settingNecessary, setSettingNecessary] = useState(1)
   useEffect(() => {
     chkFunction()
+    // users.Login()
   }, [])
 
   const chkFunction = async () => {
@@ -85,6 +87,7 @@ const App = () => {
             tabBarActiveTintColor: 'black',
             tabBarInactiveTintColor: 'grey'
           }}
+          initialParams={{ accessToken: accessToken }}
         />
         <Tab.Screen
           name="Ranking"
@@ -94,6 +97,7 @@ const App = () => {
             tabBarActiveTintColor: 'black',
             tabBarInactiveTintColor: 'grey'
           }}
+          accessToken={accessToken}
         />
         <Tab.Screen
           name="Mypage"

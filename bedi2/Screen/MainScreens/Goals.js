@@ -13,8 +13,10 @@ import WeekDay from './Goal/WeekDay'
 import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
 import TextBtn from './Goal/TextBtn'
-
-const Goals = ({ navigation }) => {
+import * as users from './Functions/Users'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyODg3MjAxLCJpYXQiOjE2NjI4ODU0MDEsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.8cR8NrlKf-ZUFgfemioBKq6eDJcIsjkJ4BR3rJ60_ng'
+const Goals = (props) => {
+    // console.log(props.accessToken)
     let clickDate = new Date()
     const [gotogoal, setGotogoal] = useState(false)
     let time = {
@@ -53,7 +55,6 @@ const Goals = ({ navigation }) => {
     const [optionClickMotion, setOptionClickMotion] = useState(false)
     const [id, setId] = useState(0)
     const [modifygoal, setModifygoal] = useState(false)
-    const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyNDY4MzQ4LCJpYXQiOjE2NjI0NDY3NDgsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.KMRqcf720iH71d1hl7OKXqJFKskDxic3dVvGFTaduvo'
     let chooseTimeString = ""
 
     if (chooseTime.month < 10 && chooseTime.date < 10) {
@@ -63,11 +64,19 @@ const Goals = ({ navigation }) => {
     } else if (chooseTime.month < 10 && chooseTime.date >= 10) {
         chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.day}`
     } else {
-        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-0${chooseTime.day}`
+        chooseTimeString = `${chooseTime.year}-0${chooseTime.month}-${chooseTime.day}`
     }
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
     useEffect(() => {
+        // users.Login()
+        users.getData(chooseTimeString).then(res => {
+            setUserDatas(res)
+            userDatas.sort(function (a, b) {
+                return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
+            })
+        })
+        console.log(userDatas)
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
         const geoLocation = () => {
@@ -92,6 +101,7 @@ const Goals = ({ navigation }) => {
     }, [chooseTime, gotogoal, optionClickMotion, modifygoal])
 
     const saveGoalData = () => {
+        console.log(props.accessToken)
         axios.post('http://beingdiligent.tk:8080/goal/create',
             {
                 "date": chooseTimeString,
@@ -124,7 +134,7 @@ const Goals = ({ navigation }) => {
                 } else {
                     Alert.alert(error.response)
                 }
-
+                console.log(error.response)
 
             })
     }
@@ -176,7 +186,9 @@ const Goals = ({ navigation }) => {
         return final
     }
 
+    console.log(modifygoal)
     const modifygoalFn = () => {
+        console.log('수정하고싶다!')
         axios.put('http://beingdiligent.tk:8080/goal/update',
             {
                 "goalId": id,
@@ -203,6 +215,8 @@ const Goals = ({ navigation }) => {
             .catch(error => {
                 if (error.response.status === 400) {
                     Alert.alert(error.response.data.errorMessage)
+                } else {
+                    console.log(error.response)
                 }
 
             })
@@ -278,6 +292,7 @@ const Goals = ({ navigation }) => {
                 setIsModal={setIsModal}
                 setGotogoal={setGotogoal}
                 setPlaceName={setPlaceName}
+                setGoalTextInput={setGoalTextInput}
             />
             <Goal
                 userDatas={userDatas}
@@ -375,7 +390,7 @@ const Goals = ({ navigation }) => {
                             <Button
                                 title="위치 설정하러 가기"
                                 onPress={() => {
-                                    navigation.navigate('Map', {
+                                    props.navigation.navigate('Map', {
                                         setArriveLat,
                                         setArriveLon,
                                         setStartLat,
@@ -386,15 +401,7 @@ const Goals = ({ navigation }) => {
                                 }}
                                 style={{ flex: 1 }}
                             />
-                            <View style={{
-                                backgroundColor: 'white',
-                                borderRadius: 20,
-                                width: '100%',
-                                marginVertical: 10,
-                                paddingVertical: 10,
-                                paddingHorizontal: 20,
-                                textAlignVertical: "top"
-                            }}>
+                            <View style={styles.whiteboxBottom}>
                                 {placeName ?
                                     <Text style={{
                                         fontSize: 16,
@@ -479,6 +486,15 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         fontSize: 16,
+        textAlignVertical: "top"
+    },
+    whiteboxBottom: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        width: '100%',
+        marginVertical: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         textAlignVertical: "top"
     },
     submitNclose: {
