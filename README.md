@@ -62,7 +62,7 @@
 
 | 분류          | 기술                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Frontend   |                                                                                                              |
+|Frontend   |  ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=square&logo=JavaScript&logoColor=black) ![React Native](https://img.shields.io/badge/React-61DAFB?style=square&logo=React&logoColor=black)  ![Android Studio](https://img.shields.io/badge/AndroidStudio-3DDC84?style=square&logo=AndroidStudio&logoColor=white)                                                                                                    |
 | Backend   | ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=SpringBoot&logoColor=white) ![Postman](https://img.shields.io/badge/Postman-FF6C37?logo=Postman&logoColor=white) ![AmazonEC2](https://img.shields.io/badge/Amazon%20EC2-FF9900?logo=AmazonEC2&logoColor=white)   ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?logo=Jenkins&logoColor=white)   ![]()   |
 | DB |  ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=MySQL&logoColor=white)  ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=Redis&logoColor=white) ![RDS](https://img.shields.io/badge/Amazon%20RDS-527FFF?logo=AmazonRDS&logoColor=white) |
 | Etc           | ![github](https://img.shields.io/badge/GitHub-181717?logo=GitHub&logoColor=white) ![]()  |
@@ -129,7 +129,7 @@ refactor: 알람 기능 등록 모듈 분리
 | -------- | --------- | ------------------------------------------------- | ------------------------- |
 | 👩‍💻 | Front-end |          |       |
 | 👩‍💻 | Back-end  |                   |        |
-| 👩‍💻 | Front-end |            |         |
+| 👩‍🎨 최송희|  Front-end |   [songhee1](https://github.com/songhee1)         |   ghenrhkwk88@naver.com      |
 | 🧙‍♂️ 이지훈 | Back-end  | [leejihoon0312](https://github.com/leejihoon0312) | wlgnsdl1016@kyonggi.ac.kr |
 
 
