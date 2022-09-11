@@ -10,7 +10,7 @@ import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
 import CheckFirstLaunch from './Launch/CheckFirstLaunch'
 
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyNzMyODI0LCJpYXQiOjE2NjI3MTEyMjQsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.Dx-MP89IB_9whgWpaEvVNEsffNgqjZ2lfvzrrna9gDk'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyODUzODI2LCJpYXQiOjE2NjI4NTIwMjYsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.YOa-gWzxNwCV-bfQzIyhKrCBGVm6dKcTPUlw3WwkuJg'
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 

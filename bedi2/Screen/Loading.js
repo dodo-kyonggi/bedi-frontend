@@ -8,7 +8,7 @@ export default Loading = () => {
             alignItems: 'center'
         }}>
             <Image
-                source={require('../gifs/loading.gif')}
+                source={require('../Gifs/loading.gif')}
                 style={{
                     height: '50%',
                     width: '50%'
