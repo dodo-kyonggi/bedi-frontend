@@ -8,6 +8,7 @@ import * as mypageUsers from './Mypage/Function/Users'
 import Loading from './Loading'
 
 const Mypage = (props) => {
+
     let [charac, setCharac] = useState()
     const [loading, setLoading] = useState(true)
 

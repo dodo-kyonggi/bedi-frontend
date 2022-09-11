@@ -10,8 +10,10 @@ import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
 import CheckFirstLaunch from './Launch/CheckFirstLaunch'
 import * as users from './Screen/MainScreens/Functions/Users'
+import { Photo } from "./Screen/Mypage/Photo";
+import PlusEvent from "./Screen/Mypage/PlusEvent";
 
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyODg3MjAxLCJpYXQiOjE2NjI4ODU0MDEsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.8cR8NrlKf-ZUFgfemioBKq6eDJcIsjkJ4BR3rJ60_ng'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTAxMTA3LCJpYXQiOjE2NjI4OTkzMDcsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.ia2g5PfC1e97Bpvl0Mdfd64DeY-UL5dOts-uemL_Azw'
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 
@@ -20,6 +22,9 @@ const MainStackComponent = () => {
     <MainStack.Navigator>
       <MainStack.Screen name="Main" component={Goals} />
       <MainStack.Screen name="Map" component={Map} />
+      <MainStack.Screen name="Mypage" component={Mypage} />
+      <MainStack.Screen name="Photo" component={Photo} />
+      <MainStack.Screen name="PlusEvent" component={PlusEvent} />
     </MainStack.Navigator>
   );
 }

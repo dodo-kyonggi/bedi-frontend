@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import additionCircle from '../../Icons/additionCircle.png'
 import picture from '../../Icons/picture.png'
 import close from '../../Icons/close.png'
-const PlusEvent = () => {
+const PlusEvent = ({ navigation }) => {
     const [plusClk, setPlusClk] = useState(false)
     useEffect(() => {
     }, [plusClk])
@@ -29,53 +29,69 @@ const PlusEvent = () => {
                 }}
                 >
                     {plusClk ?
-                        <TouchableOpacity
-                            onPress={() =>
-                                setPlusClk(prev => !prev)
-                            }
-                            style={{
-                                alignItems: 'flex-end',
-                                width: "100%",
-                                position: 'absolute',
-                                top: 20,
-                                right: 10
-                            }}
-                        >
-                            <View style={{
-                                borderRadius: 30,
-                                shadowColor: "#000",
-                                shadowOffset: {
-                                    width: 0,
-                                    height: 2,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 3.84,
-                                elevation: 5,
-                                height: '100%',
-                                backgroundColor: 'white'
-                            }}>
+                        <View>
+                            <TouchableOpacity
+                                onPress={() =>
+                                    setPlusClk(prev => !prev)
+                                }
+                                style={{
+                                    alignItems: 'flex-end',
+                                    width: "100%",
+                                    position: 'absolute',
+                                    top: -30,
+                                    right: -30
+                                }}
+                            >
+                                <View style={{
+                                    borderRadius: 30,
+                                    shadowColor: "#000",
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 3.84,
+                                    elevation: 5,
+                                    height: '100%',
+                                    backgroundColor: 'white'
+                                }}>
+                                    <Image
+                                        source={close}
+                                        style={{
+                                            height: 30,
+                                            width: 30
+                                        }}
+                                    />
+
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() =>
+                                    navigation.navigate('Photo')
+                                }>
                                 <Image
-                                    source={close}
+                                    source={picture}
                                     style={{
-                                        height: 30,
-                                        width: 30
+                                        height: 40,
+                                        width: 41
                                     }}
                                 />
-                            </View>
-                        </TouchableOpacity> :
-                        null}
-                    <TouchableOpacity
-                        onPress={() =>
-                            setPlusClk(prev => !prev)
-                        }>
-                        <Image
-                            source={plusClk ? picture : additionCircle}
-                            style={{
-                                height: 40,
-                                width: 41
-                            }}
-                        />
-                    </TouchableOpacity>
+                            </TouchableOpacity>
+                        </View> :
+                        <TouchableOpacity
+                            onPress={() => {
+                                setPlusClk(prev => !prev)
+                            }}>
+                            <Image
+                                source={additionCircle}
+                                style={{
+                                    height: 40,
+                                    width: 41
+                                }}
+                            />
+                        </TouchableOpacity>
+                    }
+
                 </View>
             </View>
         </View>
