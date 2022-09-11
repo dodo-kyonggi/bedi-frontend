@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler'
 import axios from 'axios'
 const Goal = (props) => {
+    const userDatas = props.userDatas
     const goalAchieve = (goalId) => {
         axios.post('http://beingdiligent.tk:8080/goal/success',
             {
@@ -19,7 +20,7 @@ const Goal = (props) => {
 
         )
             .then(res => {
-                props.userDatas.filter((element) => element.id !== goalId)
+                props.userDatas?.filter((element) => element.id !== goalId)
                 props.userAchievedDatas(res.data)
             })
             .catch(error => {
@@ -29,7 +30,7 @@ const Goal = (props) => {
             })
     }
     const modifyBtn = (title, id) => {
-        props.setGoalTextInput(title)
+        props?.setGoalTextInput(prev => title)
         props.setId(id)
 
     }
@@ -47,6 +48,8 @@ const Goal = (props) => {
             .catch(error => {
                 if (error.response.status === 400) {
                     Alert.alert(error.response.data.errorMessage)
+                } else {
+                    Alert.alert(error.message)
                 }
             })
     }
@@ -56,14 +59,14 @@ const Goal = (props) => {
                 <View
                     style={{ backgroundColor: 'white', height: '100%' }}>
                     <View
-                        style={props.userDatas.filter(item => item.date === props.chooseTimeString).length > 2 ?
+                        style={props.userDatas?.filter(item => item.date === props.chooseTimeString).length > 2 ?
                             styles.toomuchUnderlineContainer : styles.underlineContainer}
                     >
 
                         <Text style={styles.goalGuidText}>
                             미달성된 목표
                         </Text>
-                        {props.userDatas.filter(item => item.date === props.chooseTimeString).length > 2
+                        {props.userDatas?.filter(item => item.date === props.chooseTimeString).length > 2
                             ?
                             <Text style={{ fontSize: 10 }}>
                                 아래로 스크롤하면 다른 목표도 확인할 수 있어요!
@@ -77,16 +80,12 @@ const Goal = (props) => {
                             if (item.success === false) {
                                 if (item.date === props.chooseTimeString) {
                                     return (
-                                        <View style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                            marginVertical: '1%',
-                                            justifyContent: 'space-between'
-                                        }}
+                                        <View style={styles.behindUnderlineContainer}
                                             key={item.id}
                                         >
                                             <Text
-                                                style={{ width: '50%' }}>
+                                            // style={{ width: '60%' }}
+                                            >
                                                 {index + 1}. {item.title}
                                             </Text>
                                             <View style={{
@@ -96,17 +95,13 @@ const Goal = (props) => {
                                             }}>
                                                 <View style={{
                                                     flexDirection: 'row',
-
+                                                    justifyContent: 'center'
                                                 }}>
                                                     <TouchableOpacity
-                                                        style={{
-                                                            backgroundColor: '#33CDFF',
-                                                            paddingHorizontal: '5%',
-                                                            borderRadius: 20,
-                                                            paddingVertical: '1%',
-                                                            marginHorizontal: '1%',
-
-                                                        }}
+                                                        style={
+                                                            [styles.changeBox,
+                                                            styles.borderRightLine]
+                                                        }
                                                         onPress={() => {
                                                             goalAchieve(item.id)
                                                         }}
@@ -116,13 +111,8 @@ const Goal = (props) => {
                                                         </Text>
                                                     </TouchableOpacity>
                                                     <TouchableOpacity
-                                                        style={{
-                                                            backgroundColor: '#79CACC',
-                                                            paddingHorizontal: '5%',
-                                                            borderRadius: 20,
-                                                            paddingVertical: '1%',
-                                                            marginHorizontal: '1%'
-                                                        }}
+                                                        style={[styles.changeBox,
+                                                        styles.borderRightLine]}
                                                         onPress={() => {
                                                             props.setModifygoal(prev => !prev)
                                                             props.setArriveLat(item.lat)
@@ -134,24 +124,17 @@ const Goal = (props) => {
                                                             수정하기
                                                         </Text>
                                                     </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={styles.changeBox}
+                                                        onPress={() => {
+                                                            goalDelete(item.id)
+                                                        }}
+                                                    >
+                                                        <Text>
+                                                            삭제하기
+                                                        </Text>
+                                                    </TouchableOpacity>
                                                 </View>
-                                                <TouchableOpacity
-                                                    style={{
-                                                        backgroundColor: '#33CDFF',
-                                                        paddingHorizontal: '5%',
-                                                        borderRadius: 20,
-                                                        paddingVertical: '1%',
-                                                        marginHorizontal: '1%',
-                                                        width: 73
-                                                    }}
-                                                    onPress={() => {
-                                                        goalDelete(item.id)
-                                                    }}
-                                                >
-                                                    <Text>
-                                                        삭제하기
-                                                    </Text>
-                                                </TouchableOpacity>
                                             </View>
 
                                         </View>
@@ -159,13 +142,14 @@ const Goal = (props) => {
                                 }
                             }
                         }) : null}
-                        {props.userDatas.filter(item => item.date === props.chooseTimeString).length === 0 ?
+                        {props.userDatas?.filter(item => item.date === props.chooseTimeString).length === 0 ?
                             <View>
                                 <Text>
                                     아직 설정하신 목표가 없어요😅
                                 </Text>
                             </View>
-                            : null}
+                            :
+                            null}
                     </ScrollView>
                 </View>
             </View>
@@ -181,12 +165,7 @@ const Goal = (props) => {
                     if (item.success === true) {
                         if (item.date === chooseTimeString) {
                             return (
-                                <View style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    marginVertical: '1%',
-                                    justifyContent: 'space-between'
-                                }}
+                                <View style={styles.behindUnderlineContainer}
                                     key={item.id}
                                 >
                                     <Text>
@@ -197,13 +176,17 @@ const Goal = (props) => {
                         }
                     }
                 }) : null}
-                {props.userDatas.filter(item => item.date === props.chooseTimeString && item.success === true).length === 0 ?
+                {props.userDatas?.filter(item => item.date === props.chooseTimeString && item.success === true).length === 0 ?
                     <View>
                         <Text>
                             달성된 목표가 없어요..😧
                         </Text>
                     </View>
-                    : null}
+                    : <View>
+                        <Text>
+                            달성된 목표가 없어요..😧
+                        </Text>
+                    </View>}
             </View>
         </View>
     )
@@ -232,5 +215,22 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: '600',
         color: 'black'
+    },
+    behindUnderlineContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: '1%',
+        justifyContent: 'space-between',
+        width: '100%'
+    },
+    changeBox: {
+        backgroundColor: 'white',
+        paddingVertical: '1%',
+        marginHorizontal: '1%'
+    },
+    borderRightLine: {
+        borderRightColor: 'black',
+        borderRightWidth: 1,
+        padding: '1%'
     }
 })

@@ -1,6 +1,5 @@
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyNjQ3NDQyLCJpYXQiOjE2NjI2MjU4NDIsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.-A378yiOTCd-8jwinqogqK8kyJ6RfE7L02ddwaP_3ns'
 import axios from "axios"
-
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyODg3MjAxLCJpYXQiOjE2NjI4ODU0MDEsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.8cR8NrlKf-ZUFgfemioBKq6eDJcIsjkJ4BR3rJ60_ng'
 export function Login() {
     axios.post('http://beingdiligent.tk/user/login', {
         'password': 'thd02026',
@@ -21,19 +20,15 @@ export function register() {
         .catch(e => console.log(e.response))
 }
 
-export function getData() {
-    axios.get(`http://beingdiligent.tk:8080/goal/show?date=${chooseTimeString}`,
+export const getData = async (chooseTimeString) => {
+    return await axios.get(`http://beingdiligent.tk:8080/goal/show?date=${chooseTimeString}`,
         {
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
             }
         })
         .then(res => {
-            setUserDatas(res.data)
-            userDatas.sort(function (a, b) {
-                return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
-            })
-
+            return res.data
         })
         .catch(error => console.log(error.response))
 }
