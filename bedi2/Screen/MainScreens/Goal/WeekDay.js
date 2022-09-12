@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity } from "react-native"
-import React, { useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
+import React from "react";
 const WeekDay = (props) => {
     const onClickDate = (oneString) => {
         let d = new Date(oneString.date)
@@ -11,20 +11,10 @@ const WeekDay = (props) => {
 
     }
     return (
-        <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            paddingVertical: '2%',
-            backgroundColor: '#F8F8F8',
-            flex: 0.8,
-            borderRadius: 6,
-            borderColor: 'black'
-        }}>
+        <View style={styles.weekContainer}>
             {props.week.map((weekDay) => {
 
                 let oneString = ''
-                let month = ''
-                let date = ''
                 if (weekDay.date.getMonth() + 1 < 10 && weekDay.date.getDate() >= 10) {
                     oneString = `${weekDay.date.getFullYear()}-0${weekDay.date.getMonth() + 1}-${weekDay.date.getDate()}`
 
@@ -47,43 +37,19 @@ const WeekDay = (props) => {
                         <View style={{ paddingVertical: 5 }}>
                             <Text>{weekDay.formatted}</Text>
                         </View>
-                        <TouchableOpacity
-                            onPress={() => props.chooseTimeString = oneString}
+                        <View
                             style={oneString === props.timeString ?
-                                {
-                                    backgroundColor: '#83E022',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: 20,
-                                    width: 35,
-                                    height: 35,
-                                    padding: 5
-                                } :
+                                [styles.weekOne, { backgroundColor: '#83E022' }] :
                                 ((props.hasModalOpened && weekDay.date.getFullYear() === props.chooseTime.year
                                     && weekDay.date.getMonth() + 1 === props.chooseTime.month
                                     && weekDay.date.getDate() === props.chooseTime.day) ?
-                                    {
-                                        backgroundColor: 'yellow',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        borderRadius: 20,
-                                        width: 35,
-                                        height: 35,
-                                        padding: 5
-                                    } :
-                                    {
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        borderRadius: 5,
-                                        width: 35,
-                                        height: 35,
-                                        padding: 5
-                                    }
+                                    [styles.weekOne, { backgroundColor: 'yellow' }] :
+                                    styles.weekOne
                                 )
                             }
                         >
                             <Text>{weekDay.day}</Text>
-                        </TouchableOpacity>
+                        </View>
                     </View>
                 )
             })}
@@ -92,3 +58,23 @@ const WeekDay = (props) => {
 }
 
 export default WeekDay;
+
+const styles = StyleSheet.create({
+    weekContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingVertical: '2%',
+        backgroundColor: '#F8F8F8',
+        flex: 0.8,
+        borderRadius: 6,
+        borderColor: 'black'
+    },
+    weekOne: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        width: 35,
+        height: 35,
+        padding: 5
+    }
+})

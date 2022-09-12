@@ -1,5 +1,5 @@
 import axios from "axios"
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTAxMTA3LCJpYXQiOjE2NjI4OTkzMDcsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.ia2g5PfC1e97Bpvl0Mdfd64DeY-UL5dOts-uemL_Azw'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTgyNjAyLCJpYXQiOjE2NjI5ODA4MDIsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.rpLuNql91zZt8dbKopa7dx1HyHb2016eLppSuhunxmw'
 export function settingWtr() {
     axios.post('http://beingdiligent.tk:8080/character/setup', null,
         {
@@ -31,4 +31,20 @@ export const ongoingCharac = async () => {
             console.log('캐릭터 정보 받기 작업 실패, ', error.response)
         )
 
+}
+
+export const collectCharac = async () => {
+    return await axios.get('http://beingdiligent.tk:8080/character/collect',
+        {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        })
+        .then(res => {
+            console.log('수집한 캐릭터 목록받기 작업 성공, ', res)
+            return res.data
+        })
+        .catch(error =>
+            console.log('수집한 캐릭터 목록받기 작업 실패, ', error.response)
+        )
 }

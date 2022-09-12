@@ -14,9 +14,8 @@ import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
 import TextBtn from './Goal/TextBtn'
 import * as users from './Functions/Users'
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTAxMTA3LCJpYXQiOjE2NjI4OTkzMDcsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.ia2g5PfC1e97Bpvl0Mdfd64DeY-UL5dOts-uemL_Azw'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTcyMjkyLCJpYXQiOjE2NjI5NzA0OTIsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.vurv7jk-zGI8x2ckcD2a36dZCsfnk56Zvhb0OnR78ZM'
 const Goals = (props) => {
-    // console.log(props.accessToken)
     let clickDate = new Date()
     const [gotogoal, setGotogoal] = useState(false)
     let time = {
@@ -76,7 +75,6 @@ const Goals = (props) => {
                 return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
             })
         })
-        console.log(userDatas)
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
         const geoLocation = () => {
