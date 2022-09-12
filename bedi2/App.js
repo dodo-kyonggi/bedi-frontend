@@ -10,10 +10,10 @@ import Mypage from "./Screen/Mypage";
 import { createStackNavigator } from '@react-navigation/stack';
 import CheckFirstLaunch from './Launch/CheckFirstLaunch'
 import * as users from './Screen/MainScreens/Functions/Users'
-import { Photo } from "./Screen/Mypage/Photo";
+import Photo from "./Screen/Mypage/Photo";
 import PlusEvent from "./Screen/Mypage/PlusEvent";
 
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTAxMTA3LCJpYXQiOjE2NjI4OTkzMDcsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.ia2g5PfC1e97Bpvl0Mdfd64DeY-UL5dOts-uemL_Azw'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTA4OTg0LCJpYXQiOjE2NjI5MDcxODQsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.SDmgO8HwXHPpRj8gLiUyg2IoTNr44e9Ryue-5CSILI0'
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 
@@ -76,12 +76,13 @@ const App = () => {
         padding: '2%'
       }}>
       <Tab.Navigator
-        initialRouteName="MainScreen"
+        // initialRouteName="MainScreen"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused }) => (
             TabBarIcon(focused, route.name)
           )
         })}
+
       >
         <Tab.Screen
           name="MainScreen"
@@ -102,7 +103,7 @@ const App = () => {
             tabBarActiveTintColor: 'black',
             tabBarInactiveTintColor: 'grey'
           }}
-          accessToken={accessToken}
+          initialParams={{ accessToken: accessToken }}
         />
         <Tab.Screen
           name="Mypage"
@@ -113,7 +114,7 @@ const App = () => {
             tabBarInactiveTintColor: 'grey'
           }}
           settingNecessary={settingNecessary}
-          accessToken={accessToken}
+          initialParams={{ accessToken: accessToken }}
         />
       </Tab.Navigator>
     </NavigationContainer>

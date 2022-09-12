@@ -1,10 +1,11 @@
 import React from 'react'
 import { View, Text, Image } from 'react-native'
+import loading from '../../Gifs/loading.gif'
 const Character = (props) => {
     const img = props.img ?
         (props.img === 'egg.jpg' ? require('../../Images/character/egg.jpg') :
             (props.img === 'chick.jpg' ? require('../../Images/character/chick.jpg') :
-                require('../../Images/character/chicken.jpg'))) : null
+                require('../../Images/character/chicken.jpg'))) : loading
 
     return (
         <View style={{

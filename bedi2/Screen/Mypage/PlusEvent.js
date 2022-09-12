@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import additionCircle from '../../Icons/additionCircle.png'
 import picture from '../../Icons/picture.png'
 import close from '../../Icons/close.png'
-const PlusEvent = ({ navigation }) => {
+const PlusEvent = (props) => {
     const [plusClk, setPlusClk] = useState(false)
     useEffect(() => {
     }, [plusClk])
@@ -66,9 +66,10 @@ const PlusEvent = ({ navigation }) => {
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() =>
-                                    navigation.navigate('Photo')
-                                }>
+                                onPress={() => {
+                                    props.navigation.navigate('Photo')
+                                    setPlusClk(prev => !prev)
+                                }}>
                                 <Image
                                     source={picture}
                                     style={{

@@ -141,7 +141,12 @@ const Goal = (props) => {
                                     )
                                 }
                             }
-                        }) : null}
+                        }) :
+                            <View>
+                                <Text>
+                                    아직 설정하신 목표가 없어요😅
+                                </Text>
+                            </View>}
                         {props.userDatas?.filter(item => item.date === props.chooseTimeString).length === 0 ?
                             <View>
                                 <Text>
