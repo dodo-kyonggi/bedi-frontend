@@ -4,7 +4,7 @@ import { View, Text } from 'react-native'
 const Title = (props) => {
     let score
     if (props.point !== 0) {
-        score = props.point / 80 * 100
+        score = props.point / props.nextPoint * 100
     } else {
         score = props.point
     }
@@ -82,7 +82,7 @@ const Title = (props) => {
                                 color: 'black',
                                 fontSize: 16
                             }}>
-                                {props.point}point/800point
+                                {props.point}point/{props.nextPoint}point
                             </Text>
                         </View>
                     </View>

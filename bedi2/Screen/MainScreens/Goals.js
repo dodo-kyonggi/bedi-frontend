@@ -14,7 +14,7 @@ import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
 import TextBtn from './Goal/TextBtn'
 import * as users from './Functions/Users'
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTcyMjkyLCJpYXQiOjE2NjI5NzA0OTIsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.vurv7jk-zGI8x2ckcD2a36dZCsfnk56Zvhb0OnR78ZM'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMDU0MzM5LCJpYXQiOjE2NjMwNTI1MzksInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.GHunXuLTGzjRoRhXHN8l3YQ4dZMTM49YQ7cG0mptBe4'
 const Goals = (props) => {
     let clickDate = new Date()
     const [gotogoal, setGotogoal] = useState(false)
@@ -183,8 +183,6 @@ const Goals = (props) => {
         }
         return final
     }
-
-    console.log(modifygoal)
     const modifygoalFn = () => {
         console.log('수정하고싶다!')
         axios.put('http://beingdiligent.tk:8080/goal/update',
@@ -291,6 +289,7 @@ const Goals = (props) => {
                 setGotogoal={setGotogoal}
                 setPlaceName={setPlaceName}
                 setGoalTextInput={setGoalTextInput}
+                timeString={timeString}
             />
             <Goal
                 userDatas={userDatas}

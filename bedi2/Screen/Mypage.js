@@ -40,6 +40,7 @@ const Mypage = (props) => {
                         lvNum={charac?.character.level}
                         name={charac?.character.name}
                         point={charac?.point}
+                        nextPoint={charac?.next}
                     />
                     : <Title
                         settingNecessary={props.settingNecessary}
