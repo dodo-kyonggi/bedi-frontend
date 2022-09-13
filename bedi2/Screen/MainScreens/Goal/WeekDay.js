@@ -42,7 +42,8 @@ const WeekDay = (props) => {
                                 ((props.hasModalOpened && weekDay.date.getFullYear() === props.chooseTime.year
                                     && weekDay.date.getMonth() + 1 === props.chooseTime.month
                                     && weekDay.date.getDate() === props.chooseTime.day) ?
-                                    [styles.weekOne, { backgroundColor: 'yellow' }] :
+
+                                    [styles.weekOne, { backgroundColor: 'yellow', borderRadius: 30 }] :
                                     styles.weekOne
                                 )
                             }

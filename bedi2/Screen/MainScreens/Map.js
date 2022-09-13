@@ -178,6 +178,7 @@ function Map({ navigation, route }) {
                                 markers[1] ? route.params.setArriveLon(markers[1].coordinate.longitude.toFixed(6)) : null,
                                 markers[1] ? route.params.setPlaceName(markers[1].title) : null,
                                 navigation.goBack
+
                             }
                             style={{
                                 backgroundColor: '#F2F2F2',

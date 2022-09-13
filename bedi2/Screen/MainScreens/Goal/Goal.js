@@ -1,10 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native"
 import React, { useEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler'
 import axios from 'axios'
 const Goal = (props) => {
     const userDatas = props.userDatas
     const goalAchieve = (goalId) => {
+        console.log(goalId, props.currentPosition.latitude, props.currentPosition.longitude)
         axios.post('http://beingdiligent.tk:8080/goal/success',
             {
                 "goalId": goalId,
@@ -27,6 +28,7 @@ const Goal = (props) => {
                 if (error.response.status === 400) {
                     Alert.alert(error.response.data.errorMessage)
                 }
+                Alert.alert(error.response.data.errorMessage)
             })
     }
     const modifyBtn = (title, id) => {
@@ -46,6 +48,7 @@ const Goal = (props) => {
                 props.setOptionClickMotion(prev => !prev)
             })
             .catch(error => {
+                console.log(error.response)
                 if (error.response.status === 400) {
                     Alert.alert(error.response.data.errorMessage)
                 } else {
@@ -75,72 +78,70 @@ const Goal = (props) => {
                     </View>
 
                     <ScrollView>
-                        {props.userDatas ? props.userDatas.map((item, index) => {
-
-                            if (item.success === false) {
-                                if (item.date === props.chooseTimeString) {
-                                    return (
-                                        <View style={styles.behindUnderlineContainer}
-                                            key={item.id}
-                                        >
-                                            <Text
-                                            // style={{ width: '60%' }}
+                        {props.userDatas ? props.userDatas.filter((item, index) =>
+                            item.success === false && item.date === props.chooseTimeString
+                        ).map((item, index) => {
+                            return (
+                                <View style={styles.behindUnderlineContainer}
+                                    key={item.id}
+                                >
+                                    <Text
+                                    // style={{ width: '60%' }}
+                                    >
+                                        {index + 1}. {item.title}
+                                    </Text>
+                                    <View style={{
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                    }}>
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'center'
+                                        }}>
+                                            <TouchableOpacity
+                                                style={
+                                                    [styles.changeBox,
+                                                    styles.borderRightLine]
+                                                }
+                                                onPress={() => {
+                                                    goalAchieve(item.id)
+                                                }}
                                             >
-                                                {index + 1}. {item.title}
-                                            </Text>
-                                            <View style={{
-                                                flexDirection: 'column',
-                                                justifyContent: 'center',
-                                                alignItems: 'center'
-                                            }}>
-                                                <View style={{
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'center'
-                                                }}>
-                                                    <TouchableOpacity
-                                                        style={
-                                                            [styles.changeBox,
-                                                            styles.borderRightLine]
-                                                        }
-                                                        onPress={() => {
-                                                            goalAchieve(item.id)
-                                                        }}
-                                                    >
-                                                        <Text>
-                                                            달성하기
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                    <TouchableOpacity
-                                                        style={[styles.changeBox,
-                                                        styles.borderRightLine]}
-                                                        onPress={() => {
-                                                            props.setModifygoal(prev => !prev)
-                                                            props.setArriveLat(item.lat)
-                                                            props.setArriveLon(item.lon)
-                                                            modifyBtn(item.title, item.id)
-                                                        }}
-                                                    >
-                                                        <Text>
-                                                            수정하기
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                    <TouchableOpacity
-                                                        style={styles.changeBox}
-                                                        onPress={() => {
-                                                            goalDelete(item.id)
-                                                        }}
-                                                    >
-                                                        <Text>
-                                                            삭제하기
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            </View>
-
+                                                <Text>
+                                                    달성하기
+                                                </Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                style={[styles.changeBox,
+                                                styles.borderRightLine]}
+                                                onPress={() => {
+                                                    props.setModifygoal(prev => !prev)
+                                                    props.setArriveLat(item.lat)
+                                                    props.setArriveLon(item.lon)
+                                                    modifyBtn(item.title, item.id)
+                                                }}
+                                            >
+                                                <Text>
+                                                    수정하기
+                                                </Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                style={styles.changeBox}
+                                                onPress={() => {
+                                                    goalDelete(item.id)
+                                                }}
+                                            >
+                                                <Text>
+                                                    삭제하기
+                                                </Text>
+                                            </TouchableOpacity>
                                         </View>
-                                    )
-                                }
-                            }
+                                    </View>
+
+                                </View>
+                            )
+
                         }) :
                             <View>
                                 <Text>
@@ -168,7 +169,7 @@ const Goal = (props) => {
                 </View>
                 {props.userDatas ? props.userDatas.map((item, index) => {
                     if (item.success === true) {
-                        if (item.date === chooseTimeString) {
+                        if (item.date === props.chooseTimeString) {
                             return (
                                 <View style={styles.behindUnderlineContainer}
                                     key={item.id}
@@ -180,18 +181,18 @@ const Goal = (props) => {
                             )
                         }
                     }
-                }) : null}
+                }) : <View>
+                    <Text>
+                        아직 설정하신 목표가 없어요😅
+                    </Text>
+                </View>}
                 {props.userDatas?.filter(item => item.date === props.chooseTimeString && item.success === true).length === 0 ?
                     <View>
                         <Text>
                             달성된 목표가 없어요..😧
                         </Text>
                     </View>
-                    : <View>
-                        <Text>
-                            달성된 목표가 없어요..😧
-                        </Text>
-                    </View>}
+                    : null}
             </View>
         </View>
     )

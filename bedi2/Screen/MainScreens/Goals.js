@@ -14,7 +14,7 @@ import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
 import TextBtn from './Goal/TextBtn'
 import * as users from './Functions/Users'
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTgzNDc0LCJpYXQiOjE2NjI5ODE2NzQsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.nBnPjy0Jhpvr-eZONIpE9lhU0P2Rgiifn0DEAzjqLgM'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMDUxNTM4LCJpYXQiOjE2NjMwNDk3MzgsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.k_NebNOv9StgM_5ofpk21-AonR-xUlOrvPHn4ZqujOw'
 const Goals = (props) => {
     let clickDate = new Date()
     const [gotogoal, setGotogoal] = useState(false)
@@ -68,13 +68,13 @@ const Goals = (props) => {
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
     useEffect(() => {
-        users.Login()
+        // users.Login()
         users.getData(chooseTimeString).then(res => {
             setUserDatas(res)
             userDatas.sort(function (a, b) {
                 return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
             })
-        }, [])
+        })
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
         const geoLocation = () => {
@@ -183,8 +183,6 @@ const Goals = (props) => {
         }
         return final
     }
-
-    console.log(modifygoal)
     const modifygoalFn = () => {
         console.log('수정하고싶다!')
         axios.put('http://beingdiligent.tk:8080/goal/update',
