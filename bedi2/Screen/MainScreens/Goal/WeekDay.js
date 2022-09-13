@@ -13,7 +13,6 @@ const WeekDay = (props) => {
     return (
         <View style={styles.weekContainer}>
             {props.week.map((weekDay) => {
-
                 let oneString = ''
                 if (weekDay.date.getMonth() + 1 < 10 && weekDay.date.getDate() >= 10) {
                     oneString = `${weekDay.date.getFullYear()}-0${weekDay.date.getMonth() + 1}-${weekDay.date.getDate()}`

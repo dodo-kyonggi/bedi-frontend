@@ -14,7 +14,7 @@ import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
 import TextBtn from './Goal/TextBtn'
 import * as users from './Functions/Users'
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTcyMjkyLCJpYXQiOjE2NjI5NzA0OTIsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.vurv7jk-zGI8x2ckcD2a36dZCsfnk56Zvhb0OnR78ZM'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTgzNDc0LCJpYXQiOjE2NjI5ODE2NzQsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.nBnPjy0Jhpvr-eZONIpE9lhU0P2Rgiifn0DEAzjqLgM'
 const Goals = (props) => {
     let clickDate = new Date()
     const [gotogoal, setGotogoal] = useState(false)
@@ -68,13 +68,13 @@ const Goals = (props) => {
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
     useEffect(() => {
-        // users.Login()
+        users.Login()
         users.getData(chooseTimeString).then(res => {
             setUserDatas(res)
             userDatas.sort(function (a, b) {
                 return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
             })
-        })
+        }, [])
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
         const geoLocation = () => {
@@ -291,6 +291,7 @@ const Goals = (props) => {
                 setGotogoal={setGotogoal}
                 setPlaceName={setPlaceName}
                 setGoalTextInput={setGoalTextInput}
+                timeString={timeString}
             />
             <Goal
                 userDatas={userDatas}
