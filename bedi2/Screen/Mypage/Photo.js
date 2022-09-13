@@ -59,7 +59,7 @@ const Photo = () => {
                         borderRadius: 10
                     }}>
                         <Text style={{ color: 'black' }}>
-                            {charac[0] ? charac[0].characterName : '레벨 단계가 낮아 볼 수 없어요'}
+                            {charac ? charac[0].characterName : '레벨 단계가 낮아 볼 수 없어요'}
                         </Text>
                     </View>
                 </View>
@@ -91,7 +91,7 @@ const Photo = () => {
                         borderRadius: 10
                     }}>
                         <Text style={{ color: 'black' }}>
-                            {charac[1] ? charac[1].characterName : '레벨 단계가 낮아 볼 수 없어요'}
+                            {charac ? charac[1].characterName : '레벨 단계가 낮아 볼 수 없어요'}
                         </Text>
                     </View>
                 </View>
@@ -125,7 +125,7 @@ const Photo = () => {
                         borderRadius: 10
                     }}>
                         <Text style={{ color: 'black' }}>
-                            {charac[2] ? charac[2].characterName : '레벨 단계가 낮아 볼 수 없어요'}
+                            {charac ? (charac.length === 3 ? charac[2].characterName : '레벨 단계가 낮아 볼 수 없어요') : '레벨 단계가 낮아 볼 수 없어요'}
                         </Text>
                     </View>
                 </View>

@@ -21,6 +21,7 @@ const Goal = (props) => {
 
         )
             .then(res => {
+                console.log(res)
                 props.userDatas?.filter((element) => element.id !== goalId)
                 props.userAchievedDatas(res.data)
             })
@@ -29,6 +30,7 @@ const Goal = (props) => {
                     Alert.alert(error.response.data.errorMessage)
                 }
                 Alert.alert(error.response.data.errorMessage)
+                console.log(error.response)
             })
     }
     const modifyBtn = (title, id) => {
@@ -143,11 +145,7 @@ const Goal = (props) => {
                             )
 
                         }) :
-                            <View>
-                                <Text>
-                                    아직 설정하신 목표가 없어요😅
-                                </Text>
-                            </View>}
+                            null}
                         {props.userDatas?.filter(item => item.date === props.chooseTimeString).length === 0 ?
                             <View>
                                 <Text>
@@ -155,7 +153,9 @@ const Goal = (props) => {
                                 </Text>
                             </View>
                             :
-                            null}
+                            null
+
+                        }
                     </ScrollView>
                 </View>
             </View>
@@ -167,26 +167,27 @@ const Goal = (props) => {
                         달성된 목표
                     </Text>
                 </View>
-                {props.userDatas ? props.userDatas.map((item, index) => {
-                    if (item.success === true) {
-                        if (item.date === props.chooseTimeString) {
-                            return (
-                                <View style={styles.behindUnderlineContainer}
-                                    key={item.id}
-                                >
-                                    <Text>
-                                        {index + 1}. {item.title}
-                                    </Text>
-                                </View>
-                            )
-                        }
-                    }
-                }) : <View>
-                    <Text>
-                        아직 설정하신 목표가 없어요😅
-                    </Text>
-                </View>}
-                {props.userDatas?.filter(item => item.date === props.chooseTimeString && item.success === true).length === 0 ?
+                {props.userDatas ? props.userDatas.filter((item, index) =>
+                    item.success === true && item.date === props.chooseTimeString
+                )
+                    .map((item, index) => {
+                        return (
+                            <View style={styles.behindUnderlineContainer}
+                                key={item.id}
+                            >
+                                <Text>
+                                    {index + 1}. {item.title}
+                                </Text>
+                            </View>
+                        )
+
+
+                    }) :
+
+                    null
+
+                }
+                {props.userDatas?.filter((item, index) => item.date === props.chooseTimeString && item.success === true).length === 0 ?
                     <View>
                         <Text>
                             달성된 목표가 없어요..😧
