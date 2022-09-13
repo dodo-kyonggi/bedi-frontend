@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useEffect, useState } from 'react'
 import {
     View, Text, Button, TouchableOpacity, TextInput, Image, StyleSheet, Alert, Platform
@@ -505,3 +506,19 @@ const styles = StyleSheet.create({
         borderRadius: 20
     }
 })
+=======
+import React from 'react';
+import {View, Text, Button} from 'react-native';
+const Goals = ({navigation}) => {
+  return (
+    <View>
+      <Text>Goals Screen</Text>
+      <Button
+        title="위치 설정하러 가기"
+        onPress={() => navigation.navigate('Map')}
+      />
+    </View>
+  );
+};
+export default Goals;
+>>>>>>> Stashed changes

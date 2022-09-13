@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -123,3 +124,22 @@ const App = () => {
 
 
 export default App;
+=======
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {Provider} from 'react-redux';
+import store from './store';
+import AppInner from './AppInner';
+
+function App() {
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <AppInner />
+      </NavigationContainer>
+    </Provider>
+  );
+}
+
+export default App;
+>>>>>>> Stashed changes
