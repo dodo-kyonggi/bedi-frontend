@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { View, Text } from 'react-native'
 
 const Title = (props) => {
@@ -78,12 +78,21 @@ const Title = (props) => {
                             </Text>
                         </View>
                         <View>
-                            <Text style={{
-                                color: 'black',
-                                fontSize: 16
-                            }}>
-                                {props.point}point/{props.nextPoint}point
-                            </Text>
+                            {props.nextPoint ?
+                                <Text style={{
+                                    color: 'black',
+                                    fontSize: 16
+                                }}>
+                                    {props.point}point/{props.nextPoint}point
+                                </Text>
+                                :
+                                <Text style={{
+                                    color: 'black',
+                                    fontSize: 16
+                                }}>
+                                    {props.point}point/최고 레벨에 달성하였어요!
+                                </Text>
+                            }
                         </View>
                     </View>
                 </View>

@@ -7,14 +7,15 @@ import {
 } from 'date-fns'
 import closeIcon from '../../Icons/close.png'
 import axios from 'axios'
-import { PermissionsAndroid, StatusBar } from 'react-native'
+import { PermissionsAndroid } from 'react-native'
 import Geolocation from "react-native-geolocation-service";
 import WeekDay from './Goal/WeekDay'
 import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
 import TextBtn from './Goal/TextBtn'
 import * as users from './Functions/Users'
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMDU0MzM5LCJpYXQiOjE2NjMwNTI1MzksInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.GHunXuLTGzjRoRhXHN8l3YQ4dZMTM49YQ7cG0mptBe4'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMTU5MjIzLCJpYXQiOjE2NjMxNTc0MjMsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.iecvlI-fIoGLOcVvakZytuDVGj6Y6RQN98yIh_VYYvM'
+
 const Goals = (props) => {
     let clickDate = new Date()
     const [gotogoal, setGotogoal] = useState(false)
@@ -54,6 +55,7 @@ const Goals = (props) => {
     const [optionClickMotion, setOptionClickMotion] = useState(false)
     const [id, setId] = useState(0)
     const [modifygoal, setModifygoal] = useState(false)
+    const [changePosition, setChangePosition] = useState(false)
     let chooseTimeString = ""
 
     if (chooseTime.month < 10 && chooseTime.date < 10) {
@@ -67,35 +69,69 @@ const Goals = (props) => {
     }
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
+    const geoLocation = () => {
+        Geolocation.getCurrentPosition(
+            position => {
+                const latitude = JSON.stringify(position.coords.latitude);
+                const longitude = JSON.stringify(position.coords.longitude);
+
+                setCurrentPosition(
+                    {
+                        latitude: latitude,
+                        longitude: longitude
+                    }
+                );
+                console.log(latitude, longitude)
+            },
+            error => { console.log(error.code, error.message); },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        )
+        setChangePosition(prev => !prev)
+    }
     useEffect(() => {
         // users.Login()
         users.getData(chooseTimeString).then(res => {
             setUserDatas(res)
+            console.log(res)
             userDatas.sort(function (a, b) {
                 return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
             })
         })
+
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
-        const geoLocation = () => {
-            Geolocation.getCurrentPosition(
-                position => {
-                    const latitude = JSON.stringify(position.coords.latitude);
-                    const longitude = JSON.stringify(position.coords.longitude);
+        requestPermission().then(result => {
+            if (result === "granted") {
+                const watchId = Geolocation.getCurrentPosition(
+                    pos => {
+                        setCurrentPosition(pos.coords);
+                    },
+                    error => {
+                        console.log(error)
+                    }
+                )
+            }
+        })
 
-                    setCurrentPosition({
-                        latitude: latitude,
-                        longitude: longitude
-                    });
-                },
-                error => { console.log(error.code, error.message); },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
-            )
-        }
         if (userDatas === []) {
             setGoalTextInput('')
         }
-        geoLocation()
+        Geolocation.getCurrentPosition(
+            position => {
+                const latitude = JSON.stringify(position.coords.latitude);
+                const longitude = JSON.stringify(position.coords.longitude);
+
+                setCurrentPosition(
+                    {
+                        latitude: latitude,
+                        longitude: longitude
+                    }
+                );
+                console.log(latitude, longitude)
+            },
+            error => { console.log(error.code, error.message); },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        )
     }, [chooseTime, gotogoal, optionClickMotion, modifygoal])
 
     const saveGoalData = () => {

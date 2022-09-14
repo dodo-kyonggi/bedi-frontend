@@ -13,7 +13,7 @@ import * as users from './Screen/MainScreens/Functions/Users'
 import Photo from "./Screen/Mypage/Photo";
 import PlusEvent from "./Screen/Mypage/PlusEvent";
 
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTA4OTg0LCJpYXQiOjE2NjI5MDcxODQsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.SDmgO8HwXHPpRj8gLiUyg2IoTNr44e9Ryue-5CSILI0'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMTU3MTU4LCJpYXQiOjE2NjMxNTUzNTgsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.0atTxEIs0QE1j9FChDG5UoLXs5dYvFoUasC5fKRZ6VM'
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 

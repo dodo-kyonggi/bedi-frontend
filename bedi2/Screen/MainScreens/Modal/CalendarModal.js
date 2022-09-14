@@ -1,6 +1,6 @@
 import { Calendar } from 'react-native-calendars'
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native"
-import React, { useEffect } from "react";
+import { View, TouchableOpacity, StyleSheet, Image } from "react-native"
+import React from "react";
 
 const CalendarModal = (props) => {
     let chooseTimeString = props.chooseTimeString
