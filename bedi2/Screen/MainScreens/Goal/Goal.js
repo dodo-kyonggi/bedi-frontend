@@ -74,7 +74,7 @@ const Goal = (props) => {
     useEffect(() => {
 
 
-    }, [characAppear, open])
+    }, [characAppear, open, props.currentPosition])
     console.log(open)
     return (
         <View style={{ flex: 3, paddingHorizontal: 10, position: 'relative' }}>
@@ -105,11 +105,11 @@ const Goal = (props) => {
                                 <View style={styles.behindUnderlineContainer}
                                     key={item.id}
                                 >
-                                    <Text
-                                    // style={{ width: '60%' }}
-                                    >
-                                        {index + 1}. {item.title}
-                                    </Text>
+                                    <View style={{ width: '50%' }}>
+                                        <Text>
+                                            {index + 1}. {item.title}
+                                        </Text>
+                                    </View>
                                     <View style={{
                                         flexDirection: 'column',
                                         justifyContent: 'center',
@@ -168,7 +168,7 @@ const Goal = (props) => {
                                     아직 설정하신 목표가 없어요😅
                                 </Text>
                             </View>}
-                        {props.userDatas?.filter(item => item.date === props.chooseTimeString).length === 0 ?
+                        {props.userDatas?.filter(item => item.date === props.chooseTimeString && item.success === false).length === 0 ?
                             <View>
                                 <Text>
                                     아직 설정하신 목표가 없어요😅

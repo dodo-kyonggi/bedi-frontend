@@ -3,7 +3,6 @@ import { View, ImageBackground } from 'react-native'
 import Title from './Mypage/Title'
 import Character from './Mypage/Character'
 import PlusEvent from './Mypage/PlusEvent'
-import * as users from './MainScreens/Functions/Users'
 import * as mypageUsers from './Mypage/Function/Users'
 import Loading from './Loading'
 

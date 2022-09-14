@@ -14,7 +14,8 @@ import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
 import TextBtn from './Goal/TextBtn'
 import * as users from './Functions/Users'
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMTU1MzM1LCJpYXQiOjE2NjMxNTM1MzUsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.S89r0JRSNjdyL6ksKexlGDJLTfQx8XgYKdUgOfPVxxI'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMTU5MjIzLCJpYXQiOjE2NjMxNTc0MjMsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.iecvlI-fIoGLOcVvakZytuDVGj6Y6RQN98yIh_VYYvM'
+
 const Goals = (props) => {
     let clickDate = new Date()
     const [gotogoal, setGotogoal] = useState(false)
@@ -54,6 +55,7 @@ const Goals = (props) => {
     const [optionClickMotion, setOptionClickMotion] = useState(false)
     const [id, setId] = useState(0)
     const [modifygoal, setModifygoal] = useState(false)
+    const [changePosition, setChangePosition] = useState(false)
     let chooseTimeString = ""
 
     if (chooseTime.month < 10 && chooseTime.date < 10) {
@@ -67,14 +69,35 @@ const Goals = (props) => {
     }
     let today = new Date(chooseTime.year, chooseTime.month - 1, chooseTime.day)
 
+    const geoLocation = () => {
+        Geolocation.getCurrentPosition(
+            position => {
+                const latitude = JSON.stringify(position.coords.latitude);
+                const longitude = JSON.stringify(position.coords.longitude);
+
+                setCurrentPosition(
+                    {
+                        latitude: latitude,
+                        longitude: longitude
+                    }
+                );
+                console.log(latitude, longitude)
+            },
+            error => { console.log(error.code, error.message); },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        )
+        setChangePosition(prev => !prev)
+    }
     useEffect(() => {
         // users.Login()
         users.getData(chooseTimeString).then(res => {
             setUserDatas(res)
+            console.log(res)
             userDatas.sort(function (a, b) {
                 return a.title < b.title ? -1 : a.title > b.title ? 1 : 0
             })
         })
+
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
         requestPermission().then(result => {
@@ -89,28 +112,26 @@ const Goals = (props) => {
                 )
             }
         })
-        const geoLocation = () => {
-            Geolocation.getCurrentPosition(
-                position => {
-                    const latitude = JSON.stringify(position.coords.latitude);
-                    const longitude = JSON.stringify(position.coords.longitude);
 
-                    setCurrentPosition(
-                        {
-                            latitude: latitude,
-                            longitude: longitude
-                        }
-                    );
-                    console.log(latitude, longitude)
-                },
-                error => { console.log(error.code, error.message); },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
-            )
-        }
         if (userDatas === []) {
             setGoalTextInput('')
         }
-        geoLocation()
+        Geolocation.getCurrentPosition(
+            position => {
+                const latitude = JSON.stringify(position.coords.latitude);
+                const longitude = JSON.stringify(position.coords.longitude);
+
+                setCurrentPosition(
+                    {
+                        latitude: latitude,
+                        longitude: longitude
+                    }
+                );
+                console.log(latitude, longitude)
+            },
+            error => { console.log(error.code, error.message); },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        )
     }, [chooseTime, gotogoal, optionClickMotion, modifygoal])
 
     const saveGoalData = () => {
