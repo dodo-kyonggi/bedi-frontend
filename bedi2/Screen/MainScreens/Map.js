@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
-
 import Geolocation from "react-native-geolocation-service";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { Button, Platform, PermissionsAndroid, View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import search from '../../Icons/search.png'
+import { Platform, PermissionsAndroid, View, Text, TouchableOpacity } from "react-native";
 import RNGooglePlaces from 'react-native-google-places';
-import marker from '../../Icons/marker.png';
 
 function Map({ navigation, route }) {
     const [initialRegion, setInitialRegion] = useState({
-        latitude: 37.250712,
-        longitude: 127.061612,
+        latitude: 37.2948,
+        longitude: 127.0338,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
     })
@@ -30,7 +26,7 @@ function Map({ navigation, route }) {
 
             },
             title: "my location",
-            description: 'description1',
+            description: '나의 위치 정보입니다',
             id: 1
         }
     ])
@@ -49,7 +45,7 @@ function Map({ navigation, route }) {
     useEffect(() => {
         requestPermission().then(result => {
             if (result === "granted") {
-                const watchId = Geolocation.getCurrentPosition(
+                Geolocation.getCurrentPosition(
                     pos => {
                         setLatitude(pos.coords.latitude);
                         setLongitude(pos.coords.longitude);
@@ -62,11 +58,6 @@ function Map({ navigation, route }) {
         })
     }
         , [latitude, longitude])
-    const [location, setLocation] = useState();
-    const onChangeSearch = (e) => {
-        setText(e.nativeEvent.text)
-    }
-
     const searchFn = () => {
         setTextInput(text)
         setText('')
@@ -124,8 +115,8 @@ function Map({ navigation, route }) {
             <TouchableOpacity
                 onPress={() => searchFn()}
                 style={{
-                    position: 'absolute',//use absolute position to show button on top of the map
-                    top: '10%', //for center align
+                    position: 'absolute',
+                    top: '10%',
                     left: '18%',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -140,7 +131,6 @@ function Map({ navigation, route }) {
                     },
                     shadowOpacity: 0.34,
                     shadowRadius: 6.27,
-
                     elevation: 10
                 }}>
                 <Text style={{ fontWeight: 'bold', color: 'white' }}>
@@ -153,8 +143,8 @@ function Map({ navigation, route }) {
                         borderRadius: 20,
                         backgroundColor: 'white',
                         padding: 20,
-                        position: 'absolute',//use absolute position to show button on top of the map
-                        top: '75%', //for center align
+                        position: 'absolute',
+                        top: '75%',
                         left: '9%',
                         width: 330
                     }}

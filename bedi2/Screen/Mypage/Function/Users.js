@@ -1,5 +1,5 @@
 import axios from "axios"
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMDcxNzgxLCJpYXQiOjE2NjMwNjk5ODEsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.oHor4bPbKYVKkD8ANFQIZeFj_g9ASucVT_3dKcvS1ac'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMTU1MzM1LCJpYXQiOjE2NjMxNTM1MzUsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.S89r0JRSNjdyL6ksKexlGDJLTfQx8XgYKdUgOfPVxxI'
 export function settingWtr() {
     axios.post('http://beingdiligent.tk:8080/character/setup', null,
         {

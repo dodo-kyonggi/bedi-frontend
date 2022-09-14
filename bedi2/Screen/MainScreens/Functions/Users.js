@@ -1,5 +1,5 @@
 import axios from "axios"
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMDY5NTY0LCJpYXQiOjE2NjMwNjc3NjQsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.bLTr3H-l_WV30vn0-gxoaVNbM5ralv_51ZwZgkCEiXU'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMTU1MzM1LCJpYXQiOjE2NjMxNTM1MzUsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.S89r0JRSNjdyL6ksKexlGDJLTfQx8XgYKdUgOfPVxxI'
 export function Login() {
     console.log('로그인 함수 실행')
     axios.post('http://beingdiligent.tk/user/login', {

@@ -7,14 +7,14 @@ import {
 } from 'date-fns'
 import closeIcon from '../../Icons/close.png'
 import axios from 'axios'
-import { PermissionsAndroid, StatusBar } from 'react-native'
+import { PermissionsAndroid } from 'react-native'
 import Geolocation from "react-native-geolocation-service";
 import WeekDay from './Goal/WeekDay'
 import CalendarModal from './Modal/CalendarModal'
 import Goal from './Goal/Goal'
 import TextBtn from './Goal/TextBtn'
 import * as users from './Functions/Users'
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMDY5NTY0LCJpYXQiOjE2NjMwNjc3NjQsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.bLTr3H-l_WV30vn0-gxoaVNbM5ralv_51ZwZgkCEiXU'
+const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYzMTU1MzM1LCJpYXQiOjE2NjMxNTM1MzUsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.S89r0JRSNjdyL6ksKexlGDJLTfQx8XgYKdUgOfPVxxI'
 const Goals = (props) => {
     let clickDate = new Date()
     const [gotogoal, setGotogoal] = useState(false)
@@ -77,16 +77,31 @@ const Goals = (props) => {
         })
         const weekDays = getWeekDays(today)
         setWeek(weekDays)
+        requestPermission().then(result => {
+            if (result === "granted") {
+                const watchId = Geolocation.getCurrentPosition(
+                    pos => {
+                        setCurrentPosition(pos.coords);
+                    },
+                    error => {
+                        console.log(error)
+                    }
+                )
+            }
+        })
         const geoLocation = () => {
             Geolocation.getCurrentPosition(
                 position => {
                     const latitude = JSON.stringify(position.coords.latitude);
                     const longitude = JSON.stringify(position.coords.longitude);
 
-                    setCurrentPosition({
-                        latitude: latitude,
-                        longitude: longitude
-                    });
+                    setCurrentPosition(
+                        {
+                            latitude: latitude,
+                            longitude: longitude
+                        }
+                    );
+                    console.log(latitude, longitude)
                 },
                 error => { console.log(error.code, error.message); },
                 { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
