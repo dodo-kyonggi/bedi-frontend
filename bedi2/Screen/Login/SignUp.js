@@ -1,144 +1,253 @@
-import React, {useCallback, useRef, useState} from 'react';
-import {Overlay} from 'react-native-safe-area-context';
-import {
-  ActivityIndicator,
-  StatusBar,
-  Alert,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import 'react-native-gesture-handler';
-import DismissKeyboardView from './DismissKeyboardView';
-import {Button} from 'react-native';
+import React, {useState, createRef} from 'react';
 import axios from 'axios';
 
-const SignUp = ({navigation}) => {
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
+import 'react-native-gesture-handler';
+
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Button,
+  TextInput,
+  Keyboard,
+  Modal,
+  ScrollView,
+  Platform,
+  Alert,
+} from 'react-native';
+
+const SignUp = props => {
+  const setURL = require('../Login/setURL');
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [userPasswordchk, setUserPasswordchk] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errortext, setErrortext] = useState('');
+  const [errortext2, setErrortext2] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneNumErr, setPhoneNumErr] = useState();
   const [certificationNumber, setCertificationNumber] = useState('');
   const [certificationNumberErr, setCertificationNumberErr] = useState();
   const [isVisible, setVisible] = useState(false);
+  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
 
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-  const emailRef = useRef();
-  const nameRef = useRef();
-  const passwordRef = useRef();
-  const phoneRef = useRef();
-  const certificationNumberRef = useRef();
+  const idInputRef = createRef();
+  const phoneRef = createRef();
+  const certificationNumberRef = createRef();
+  const passwordInputRef = createRef();
+  const passwordchkInputRef = createRef();
+  const nameInputRef = createRef();
 
-  const onChangeEmail = useCallback(text => {
-    setEmail(text.trim());
-  }, []);
-  const onChangePhone = useCallback(text => {
-    setPhone(text.trim());
-  }, []);
-  const onChangeCertificationNumber = useCallback(text => {
-    setCertificationNumber(text.trim());
-  }, []);
-  const onChangeName = useCallback(text => {
-    setUserName(text.trim());
-  }, []);
-  const onChangePassword = useCallback(text => {
-    setPassword(text.trim());
-  }, []);
+  const handleSubmitButton = () => {
+    setErrortext('');
 
-  const onSubmit = useCallback(async () => {
-    if (loading) {
+    if (!userName) {
+      alert('이름을 입력해주세요');
       return;
-    } //요청가지않게 막아주기
-    if (!email || !email.trim()) {
-      return Alert.alert('알림', '이메일을 입력해주세요.');
     }
-    if (!username || !username.trim()) {
-      return Alert.alert('알림', '이름을 입력해주세요.');
+    if (!userEmail) {
+      alert('E-mail을 입력해주세요');
+      return;
     }
-    if (!password || !password.trim()) {
-      return Alert.alert('알림', '비밀번호를 입력해주세요.');
-    }
-    if (!phone || !phone.trim()) {
-      return Alert.alert('알림', '핸드폰 번호를 입력해주세요.');
-    }
-    if (!certificationNumber || !certificationNumber.trim()) {
-      return Alert.alert('알림', '인증번호를 입력해주세요.');
-    }
-    if (
-      !/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/.test(
-        email,
-      )
-    ) {
-      return Alert.alert('알림', '올바른 이메일 주소가 아닙니다.');
-    }
-    if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
-      return Alert.alert(
-        '알림',
-        '비밀번호는 영문,숫자,특수문자($@^!%*#?&)를 모두 포함하여 8자 이상 입력해야합니다.',
-      );
-    }
-    console.log(email, username, password, phone, certificationNumber);
 
-    try {
-      setLoading(true);
-      //http메서드 : get, put, patch, post, delete, head, options
-      const response = await axios.post(
-        'http://beingdiligent.tk:8080/user/signup',
-        {
-          email,
-          username,
-          password,
-        },
-      );
-      console.log(response.data);
-      Alert.alert('알림', '회원가입 되었습니다.');
-      navigation.navigate('SignIn');
-    } catch (error) {
-      console.error(error.response);
-      if (error.response) {
-        Alert.alert('알림', error.response.data.errorMessage);
-      }
-    } finally {
-      setLoading(false);
+    if (!userPassword) {
+      alert('비밀번호를 입력해주세요');
+      return;
     }
-  }, [navigation, loading, email, username, password]);
+    if (!phone) {
+      alert('핸드폰번호를 입력해주세요');
+      return;
+    }
+    if (!certificationNumber) {
+      alert('올바른 인증번호를 입력해주세요');
+      return;
+    }
+    if (userPasswordchk != userPassword) {
+      alert('비밀번호가 일치하지 않습니다');
+      return;
+    }
+    //Show Loader
+    setLoading(true);
 
-  const canGoNext = email && username && password;
+    var dataToSend = {
+      username: userName,
+      email: userEmail,
+      password: userPassword,
+      phone: phone,
+      certificationNumber: certificationNumber,
+    };
+    var formBody = [];
+
+    for (var key in dataToSend) {
+      var encodedKey = encodeURIComponent(key);
+      var encodedValue = encodeURIComponent(dataToSend[key]);
+      formBody.push(encodedKey + '=' + encodedValue);
+    }
+    formBody = formBody.join('&');
+
+    fetch(setURL + '/user/signup', {
+      method: 'POST',
+      body: formBody,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        setLoading(false);
+        setErrortext2('');
+        console.log(responseJson);
+        // If server response message same as Data Matched
+        if (responseJson.status === 'success') {
+          setIsRegistraionSuccess(true);
+          console.log('Registration Successful. Please Login to proceed');
+        } else if (responseJson.status === 'duplicate') {
+          setErrortext2('이미 존재하는 이메일입니다.');
+        }
+      })
+      .catch(error => {
+        //Hide Loader
+        setLoading(false);
+        console.error(error);
+      });
+  };
+
+  if (isRegistraionSuccess) {
+    return (
+      <View style={styles.container}>
+        <View style={{flex: 1}} />
+        <View style={{flex: 2}}>
+          <View
+            style={{
+              height: hp(13),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              source={require('../../Images/bedilogo.png')}
+              style={{
+                height: wp(20),
+                resizeMode: 'contain',
+                alignSelf: 'center',
+              }}
+            />
+          </View>
+          <View
+            style={{
+              height: hp(7),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text style={{color: 'black', fontSize: wp('4%')}}>
+              회원가입이 완료되었습니다.
+            </Text>
+          </View>
+
+          <View style={{height: hp(20), justifyContent: 'center'}}>
+            <View style={styles.btnArea}>
+              <TouchableOpacity
+                style={styles.btn}
+                activeOpacity={0.5}
+                onPress={() => props.navigation.navigate('SignIn')}>
+                <Text style={{color: 'white', fontSize: wp('4%')}}>
+                  로그인하기
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  }
   return (
-    <DismissKeyboardView>
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>이메일</Text>
+    <View style={styles.container}>
+      <View style={styles.topArea}>
+        <View style={styles.titleArea}>
+          <Image
+            source={require('../../Images/bedilogo.png')}
+            style={{width: wp(40), resizeMode: 'contain'}}
+          />
+        </View>
+        <View style={styles.TextArea}>
+          <Text style={styles.Text}>회원가입하여 나만의 목표를 설정하고</Text>
+          <Text style={styles.Text}>
+            BEDI와 함께 목표를 차근차근 이뤄나가 보아요!
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.formArea}>
         <TextInput
-          style={styles.textInput}
-          onChangeText={onChangeEmail}
-          placeholder="이메일을 입력해주세요"
-          placeholderTextColor="#666"
-          textContentType="emailAddress"
-          value={email}
+          style={styles.textFormTop}
+          placeholder={'이름(닉네임)'}
+          onChangeText={UserName => setUserName(UserName)}
+          ref={nameInputRef}
           returnKeyType="next"
-          clearButtonMode="while-editing"
-          ref={emailRef}
-          onSubmitEditing={() => phoneRef.current?.focus()}
+          onSubmitEditing={() =>
+            idInputRef.current && idInputRef.current.focus()
+          }
+          blurOnSubmit={false}
+        />
+        <TextInput
+          style={styles.textFormMiddle}
+          placeholder={'아이디(이메일)'}
+          onChangeText={userEmail => setUserEmail(userEmail)}
+          ref={idInputRef}
+          returnKeyType="next"
+          onSubmitEditing={() =>
+            passwordInputRef.current && passwordInputRef.current.focus()
+          }
+          blurOnSubmit={false}
+        />
+        <TextInput
+          style={styles.textFormMiddle}
+          secureTextEntry={true}
+          placeholder={'비밀번호(8자 이상)'}
+          onChangeText={UserPassword => setUserPassword(UserPassword)}
+          ref={passwordInputRef}
+          returnKeyType="next"
+          onSubmitEditing={() =>
+            passwordchkInputRef.current && passwordchkInputRef.current.focus()
+          }
+          blurOnSubmit={false}
+        />
+        <TextInput
+          style={styles.textFormBottom}
+          secureTextEntry={true}
+          placeholder={'비밀번호 확인'}
+          onChangeText={UserPasswordchk => setUserPasswordchk(UserPasswordchk)}
+          ref={passwordchkInputRef}
+          returnKeyType="next"
+          onSubmitEditing={() =>
+            phoneRef.current && phoneInputRef.current.focus()
+          }
           blurOnSubmit={false}
         />
       </View>
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>휴대폰 인증</Text>
+
+      <View style={{flex: 0.5, justifyContent: 'center'}}>
+        {userPassword !== userPasswordchk ? (
+          <Text style={styles.TextValidation}>
+            비밀번호가 일치하지 않습니다.
+          </Text>
+        ) : null}
+      </View>
+
+      <View style={styles.formArea2}>
         <TextInput
-          style={styles.textInput}
-          onChangeText={onChangePhone}
-          placeholder="휴대폰 번호를 입력해주세요"
-          placeholderTextColor="#666"
-          textContentType="phoneNumber"
-          value={phone}
-          returnKeyType="next"
-          clearButtonMode="while-editing"
+          style={styles.textFormAll}
+          placeholder={'핸드폰번호'}
+          onChangeText={phone => setPhone(phone)}
           ref={phoneRef}
+          returnKeyType="next"
           onSubmitEditing={() => certificationNumberRef.current?.focus()}
           blurOnSubmit={false}
         />
@@ -173,18 +282,16 @@ const SignUp = ({navigation}) => {
           }}
         />
       </View>
-      <View style={styles.inputWrapper}>
+      <View style={styles.formArea3}>
         <TextInput
-          style={styles.textInput}
-          onChangeText={onChangeCertificationNumber}
-          placeholder="인증번호를 입력해주세요 예) 123456"
-          placeholderTextColor="#666"
-          textContentType="certificationNumber"
-          value={certificationNumber}
-          returnKeyType="next"
-          clearButtonMode="while-editing"
+          style={styles.textFormAll}
+          placeholder={'인증번호 입력'}
+          onChangeText={certificationNumber =>
+            setCertificationNumber(certificationNumber)
+          }
           ref={certificationNumberRef}
-          onSubmitEditing={() => nameRef.current?.focus()}
+          returnKeyType="next"
+          onSubmitEditing={handleSubmitButton}
           blurOnSubmit={false}
         />
         <Button
@@ -213,6 +320,7 @@ const SignUp = ({navigation}) => {
               .then(res => {
                 if (res.status === 200) {
                   setVisible(true);
+                  Alert.alert('인증번호가 확인되었습니다');
                 }
               })
               .catch(err => {
@@ -223,119 +331,152 @@ const SignUp = ({navigation}) => {
           }}
         />
       </View>
-      <Overlay
-        isVisible={isVisible}
-        height={100}
-        width={220}
-        onBackdropPress={(): void => setVisible(false)}>
-        <View style={{flex: 1}}>
-          <Text style={{alignSelf: 'center', fontSize: 15, marginTop: 10}}>
-            휴대폰 번호가 인증되었습니다
-          </Text>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-              justifyContent: 'space-around',
-            }}>
-            <Button
-              title="완료"
-              onPress={(): void => {
-                setVisible(false);
-                props.navigation.navigate('SignUp', {
-                  mobiletest: phone,
-                });
-              }}
-              type="clear"
-            />
-          </View>
-        </View>
-      </Overlay>
 
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>이름</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="이름을 입력해주세요."
-          placeholderTextColor="#666"
-          onChangeText={onChangeName}
-          value={username}
-          textContentType="username"
-          returnKeyType="next"
-          clearButtonMode="while-editing"
-          ref={nameRef}
-          onSubmitEditing={() => passwordRef.current?.focus()}
-          blurOnSubmit={false}
-        />
+      <View style={{flex: 0.7, justifyContent: 'center'}}>
+        {errortext2 !== '' ? (
+          <Text style={styles.TextValidation}>{errortext2}</Text>
+        ) : null}
       </View>
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>비밀번호</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="비밀번호를 입력해주세요(영문,숫자,특수문자)"
-          placeholderTextColor="#666"
-          onChangeText={onChangePassword}
-          value={password}
-          keyboardType={Platform.OS === 'android' ? 'default' : 'ascii-capable'}
-          textContentType="password"
-          secureTextEntry
-          returnKeyType="send"
-          clearButtonMode="while-editing"
-          ref={passwordRef}
-          onSubmitEditing={onSubmit}
-        />
+
+      <View style={{flex: 0.75}}>
+        <View style={styles.btnArea}>
+          <TouchableOpacity style={styles.btn2} onPress={handleSubmitButton}>
+            <Text style={{color: 'white', fontSize: wp('4%')}}>회원가입</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.buttonZone}>
-        <Pressable
-          style={
-            canGoNext
-              ? StyleSheet.compose(styles.loginButton, styles.loginButtonActive)
-              : styles.loginButton
-          }
-          //여기에 loading 넣어주는거 매우 중요
-          disabled={!canGoNext || loading}
-          onPress={onSubmit}>
-          {loading ? (
-            <ActivityIndicator color="gray" />
-          ) : (
-            <Text style={styles.loginButtonText}>회원가입</Text>
-          )}
-        </Pressable>
-      </View>
-    </DismissKeyboardView>
+      <View style={{flex: 1}} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  textInput: {
-    padding: 5,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    paddingLeft: wp(7),
+    paddingRight: wp(7),
   },
-  inputWrapper: {
-    padding: 20,
+  topArea: {
+    flex: 1.5,
+    paddingTop: wp(2),
   },
-  label: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 20,
+  titleArea: {
+    flex: 0.7,
+    justifyContent: 'center',
+    paddingTop: wp(3),
   },
-  buttonZone: {
+  TextArea: {
+    flex: 0.3,
+    justifyContent: 'center',
+    paddingTop: hp(1),
+    paddingBottom: hp(1),
+  },
+  alertArea: {
+    height: wp(150),
+  },
+  Text: {
+    fontSize: wp(4),
+  },
+  TextValidation: {
+    fontSize: wp('4%'),
+    color: 'red',
+  },
+
+  formArea: {
+    flex: 10,
+    justifyContent: 'center',
+    marginTop: hp(-40),
+    marginBottom: hp(-10),
+  },
+
+  formArea2: {
+    flex: 2,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: hp(-40),
+    marginBottom: hp(-5),
   },
-  loginButton: {
-    backgroundColor: 'gray',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10,
+
+  formArea3: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp(-5),
+    marginBottom: hp(-5),
   },
-  loginButtonActive: {
-    backgroundColor: 'blue',
+
+  textFormTop: {
+    borderWidth: 2,
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    width: '100%',
+    height: hp(6),
+    paddingLeft: 10,
+    paddingRight: 10,
   },
-  loginButtonText: {
-    color: 'white',
-    fontSize: 16,
+  textFormMiddle: {
+    borderWidth: 2,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    width: '100%',
+    height: hp(6),
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  textFormBottom: {
+    borderWidth: 2,
+    borderTopWidth: 1,
+    borderColor: 'black',
+    borderBottomRightRadius: 7,
+    borderBottomLeftRadius: 7,
+    width: '100%',
+    height: hp(6),
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  textFormAll: {
+    borderWidth: 2,
+    borderTopWidth: 1,
+    borderColor: 'black',
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    borderBottomRightRadius: 7,
+    borderBottomLeftRadius: 7,
+    width: '100%',
+    height: hp(6),
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  btnArea: {
+    height: hp(8),
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: hp(1),
+  },
+  btn1: {
+    flex: 1,
+    width: '100%',
+    borderRadius: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fbc328',
+  },
+  btn2: {
+    flex: 1,
+    width: '100%',
+    borderRadius: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fbc328',
+  },
+  scrollContainer: {
+    flex: 1,
+    paddingHorizontal: 15,
   },
 });
 

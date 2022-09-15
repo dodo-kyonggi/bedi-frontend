@@ -13,8 +13,8 @@ import * as users from './Screen/MainScreens/Functions/Users';
 import Photo from './Screen/Mypage/Photo';
 import PlusEvent from './Screen/Mypage/PlusEvent';
 import Splash from './Screen/Login/Splash';
-import SignIn from './Screen/Login/SignIn';
-import SignUp from './Screen/Login/SignUp';
+//import SignIn from './Screen/Login/SignIn';
+//import SignUp from './Screen/Login/SignUp';
 
 const accessToken =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNzY2ODAyNjk5IiwiZXhwIjoxNjYyOTA4OTg0LCJpYXQiOjE2NjI5MDcxODQsInVzZXJuYW1lIjoic29uZ2hlZWNvIn0.SDmgO8HwXHPpRj8gLiUyg2IoTNr44e9Ryue-5CSILI0';
@@ -77,64 +77,44 @@ const App = () => {
       style={{
         padding: '2%',
       }}>
-      {isLoggedIn ? (
-        <Tab.Navigator
-          // initialRouteName="MainScreen"
-          screenOptions={({route}) => ({
-            tabBarIcon: ({focused}) => TabBarIcon(focused, route.name),
-          })}>
-          <Tab.Screen
-            name="MainScreen"
-            component={MainStackComponent}
-            options={{
-              headerShown: false,
-              tabBarLabel: '홈',
-              tabBarActiveTintColor: 'black',
-              tabBarInactiveTintColor: 'grey',
-            }}
-            initialParams={{accessToken: accessToken}}
-          />
-          <Tab.Screen
-            name="Statistics"
-            component={Statistics}
-            options={{
-              tabBarLabel: '통계',
-              tabBarActiveTintColor: 'black',
-              tabBarInactiveTintColor: 'grey',
-            }}
-            initialParams={{accessToken: accessToken}}
-          />
-          <Tab.Screen
-            name="Mypage"
-            component={Mypage}
-            options={{
-              tabBarLabel: '마이페이지',
-              tabBarActiveTintColor: 'black',
-              tabBarInactiveTintColor: 'grey',
-            }}
-            settingNecessary={settingNecessary}
-            initialParams={{accessToken: accessToken}}
-          />
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Splash"
-            component={Splash}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="SignIn"
-            component={SignIn}
-            options={{title: '로그인'}}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{title: '회원가입'}}
-          />
-        </Stack.Navigator>
-      )}
+      <Tab.Navigator
+        // initialRouteName="MainScreen"
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused}) => TabBarIcon(focused, route.name),
+        })}>
+        <Tab.Screen
+          name="MainScreen"
+          component={MainStackComponent}
+          options={{
+            headerShown: false,
+            tabBarLabel: '홈',
+            tabBarActiveTintColor: 'black',
+            tabBarInactiveTintColor: 'grey',
+          }}
+          initialParams={{accessToken: accessToken}}
+        />
+        <Tab.Screen
+          name="Statistics"
+          component={Statistics}
+          options={{
+            tabBarLabel: '통계',
+            tabBarActiveTintColor: 'black',
+            tabBarInactiveTintColor: 'grey',
+          }}
+          initialParams={{accessToken: accessToken}}
+        />
+        <Tab.Screen
+          name="Mypage"
+          component={Mypage}
+          options={{
+            tabBarLabel: '마이페이지',
+            tabBarActiveTintColor: 'black',
+            tabBarInactiveTintColor: 'grey',
+          }}
+          settingNecessary={settingNecessary}
+          initialParams={{accessToken: accessToken}}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };

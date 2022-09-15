@@ -1,162 +1,200 @@
-import React, {useRef, useState, useCallback} from 'react';
+import React, {useState, createRef} from 'react';
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
+import 'react-native-gesture-handler';
 import {
   Alert,
-  Pressable,
   StyleSheet,
-  Text,
-  TextInput,
   View,
-  ActivityIndicator,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
-import Loading from '../Loading';
-import DismissKeyboardView from './DismissKeyboardView';
 import axios from 'axios';
-import 'react-native-gesture-handler';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 const SignIn = ({navigation}) => {
+  const [userId, setUserId] = useState('');
+  const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const [errortext, setErrortext] = useState('');
 
-  const onChangeEmail = useCallback(text => {
-    setEmail(text.trim());
-  }, []);
-  const onChangePassword = useCallback(text => {
-    setPassword(text.trim());
-  }, []);
-  const onSubmit = useCallback(async () => {
+  const passwordInputRef = createRef();
+
+  const handleSubmitPress = async () => {
     if (loading) {
       return;
     }
-    if (!email || !email.trim()) {
-      return Alert.alert('알림', '이메일을 입력해주세요.');
+    if (!userId) {
+      alert('아이디를 입력해주세요');
+      return;
     }
-    if (!password || !password.trim()) {
-      return Alert.alert('알림', '비밀번호를 입력해주세요.');
+    if (!userPassword) {
+      alert('비밀번호를 입력해주세요');
+      return;
     }
-
     try {
       setLoading(true);
-      const response = await axios.post(
-        'http://beingdiligent.tk:8080/user/login',
-        {
-          email,
-          password,
-        },
-      );
+      const response = await axios.post('http://beingdiligent.tk/user/login', {
+        email: userId,
+        password: userPassword,
+      });
       console.log(response.data);
       Alert.alert('알림', '로그인 되었습니다.');
-      await EncryptedStorage.setItem(
-        'refreshToken',
-        response.data.data.refreshToken,
-      );
-    } catch (error) {
-      console.error(error.response);
-    } finally {
       setLoading(false);
+      navigation.replace('MainScreen');
+    } catch (error) {
+      setLoading(false);
+      console.error(error.response);
     }
-  }, [loading, email, password]);
-
-  const toSignUp = useCallback(() => {
-    navigation.navigate('SignUp');
-  }, [navigation]);
-
-  const canGoNext = email && password;
+  };
 
   return (
-    <DismissKeyboardView>
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>이메일</Text>
+    <View style={styles.container}>
+      <View style={styles.topArea}>
+        <View style={styles.titleArea}>
+          <Image
+            source={require('../../Images/bedilogo.png')}
+            style={{width: wp(30), resizeMode: 'contain'}}
+          />
+        </View>
+        <View style={styles.TextArea}>
+          <Text style={styles.Text}>로그인을 통해 BEDI와 함께</Text>
+          <Text style={styles.Text}>목표를 달성해보세요</Text>
+        </View>
+      </View>
+
+      <View style={styles.formArea}>
         <TextInput
-          style={styles.textInput}
-          onChangeText={onChangeEmail}
-          placeholder="이메일을 입력해주세요"
-          placeholderTextColor="#666"
-          importantForAutofill="yes"
-          autoComplete="email"
-          textContentType="emailAddress"
-          value={email}
+          style={styles.textFormTop}
+          placeholder={'아이디'}
+          onChangeText={userId => setUserId(userId)}
+          autoCapitalize="none"
           returnKeyType="next"
-          clearButtonMode="while-editing"
-          ref={emailRef}
-          onSubmitEditing={() => passwordRef.current?.focus()}
+          onSubmitEditing={() =>
+            passwordInputRef.current && passwordInputRef.current.focus()
+          }
+          underlineColorAndroid="#f000"
           blurOnSubmit={false}
         />
-      </View>
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>비밀번호</Text>
         <TextInput
-          style={styles.textInput}
-          placeholder="비밀번호를 입력해주세요(영문,숫자,특수문자)"
-          placeholderTextColor="#666"
-          importantForAutofill="yes"
-          onChangeText={onChangePassword}
-          value={password}
-          autoComplete="password"
-          textContentType="password"
-          secureTextEntry
-          returnKeyType="send"
-          clearButtonMode="while-editing"
-          ref={passwordRef}
-          onSubmitEditing={onSubmit}
+          style={styles.textFormBottom}
+          onChangeText={userPassword => setUserPassword(userPassword)}
+          secureTextEntry={true}
+          placeholder={'비밀번호'}
+          returnKeyType="next"
+          keyboardType="default"
+          ref={passwordInputRef}
+          onSubmitEditing={Keyboard.dismiss}
+          blurOnSubmit={false}
         />
+        {errortext != '' ? (
+          <Text style={styles.TextValidation}> {errortext}</Text>
+        ) : null}
       </View>
-      <View style={styles.buttonZone}>
-        <Pressable
-          style={
-            canGoNext
-              ? StyleSheet.compose(styles.loginButton, styles.loginButtonActive)
-              : styles.loginButton
-          }
-          disabled={!canGoNext || loading}
-          onPress={onSubmit}>
-          {loading ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text style={styles.loginButtonText}>로그인</Text>
-          )}
-        </Pressable>
-        <Pressable onPress={toSignUp}>
-          <Text>회원가입하기</Text>
-        </Pressable>
+      <View style={{flex: 0.75}}>
+        <View style={styles.btnArea}>
+          <TouchableOpacity style={styles.btn} onPress={handleSubmitPress}>
+            <Text style={{color: 'white', fontSize: wp('4%')}}>로그인</Text>
+          </TouchableOpacity>
+        </View>
+        <Text
+          style={styles.TextRegister}
+          onPress={() => navigation.navigate('SignUp')}>
+          BEDI를 이용하시려면 회원가입이 필요합니다.
+        </Text>
       </View>
-    </DismissKeyboardView>
+
+      <View style={{flex: 3}} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  textInput: {
-    padding: 5,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+  container: {
+    flex: 1, //전체의 공간을 차지한다는 의미
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    paddingLeft: wp(7),
+    paddingRight: wp(7),
   },
-  inputWrapper: {
-    padding: 20,
+  topArea: {
+    flex: 1,
+    paddingTop: wp(2),
   },
-  label: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 20,
+  titleArea: {
+    flex: 0.7,
+    justifyContent: 'center',
+    paddingTop: wp(3),
   },
-  buttonZone: {
+  TextArea: {
+    flex: 0.3,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  Text: {
+    fontSize: wp('4%'),
+    paddingBottom: wp('1%'),
+  },
+  TextValidation: {
+    fontSize: wp('4%'),
+    color: 'red',
+    paddingTop: wp(2),
+  },
+  TextRegister: {
+    fontSize: wp('4%'),
+    color: 'grey',
+    textDecorationLine: 'underline',
+    paddingTop: wp(2),
+  },
+  formArea: {
+    justifyContent: 'center',
+    // paddingTop: wp(10),
+    flex: 1.5,
+  },
+  textFormTop: {
+    borderWidth: 2,
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    width: '100%',
+    height: hp(6),
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  textFormBottom: {
+    borderWidth: 2,
+    borderTopWidth: 1,
+    borderColor: 'black',
+    borderBottomRightRadius: 7,
+    borderBottomLeftRadius: 7,
+    width: '100%',
+    height: hp(6),
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  btnArea: {
+    height: hp(8),
+    // backgroundColor: 'orange',
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: hp(1.5),
   },
-  loginButton: {
-    backgroundColor: 'gray',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  loginButtonActive: {
-    backgroundColor: 'blue',
-  },
-  loginButtonText: {
-    color: 'white',
-    fontSize: 16,
+  btn: {
+    flex: 1,
+    width: '100%',
+    borderRadius: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fbc328',
   },
 });
-
 export default SignIn;
