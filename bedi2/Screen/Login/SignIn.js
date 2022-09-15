@@ -20,7 +20,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-const SignIn = ({navigation}) => {
+const SignIn = props => {
   const [userId, setUserId] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,7 @@ const SignIn = ({navigation}) => {
       console.log(response.data);
       Alert.alert('알림', '로그인 되었습니다.');
       setLoading(false);
-      navigation.replace('MainScreen');
+      props.navigation.replace('MainScreen');
     } catch (error) {
       setLoading(false);
       console.error(error.response);
