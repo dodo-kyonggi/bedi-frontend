@@ -58,7 +58,7 @@ const Statistics = props => {
     <View>
       <View style={styles.boxZone1}>
         <Text style={styles.titleText}>
-          '<Text style={styles.smallText}>ㅇㅇㅇ</Text>' 님의
+          '<Text style={styles.smallText}>홍길동</Text>' 님의
         </Text>
       </View>
       <View>
@@ -93,7 +93,9 @@ const Statistics = props => {
           </Text>
         </View>
         <View style={styles.boxZone3}>
-          <Text style={styles.bottomText}>랭킹은 {topRank} 입니다.</Text>
+          <Text style={styles.bottomText}>
+            랭킹은 <Text style={styles.smallText}>{topRank} </Text>입니다.
+          </Text>
         </View>
       </View>
     </View>
@@ -105,7 +107,7 @@ export default Statistics;
 const styles = StyleSheet.create({
   boxZone1: {
     padding: 20,
-    backgroundColor: '#FFFFF1',
+    backgroundColor: '#FFFFF2',
   },
   boxZone2: {
     padding: 20,
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   smallText: {
-    color: 'light-orange',
+    color: 'orange',
   },
   bottomText: {
     fontSize: 30,
